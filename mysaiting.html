@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой сайт с Telegram ссылками</title>
+    <style>
+        /* Общие стили страницы */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            /* Градиентный фон */
+            color: white;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .button {
+            background-color: #00bfff;
+            color: white;
+            padding: 15px 40px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            border-radius: 30px;
+            margin: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .button:hover {
+            background-color: #008bb0;
+            transform: scale(1.1);
+        }
+
+        .button:active {
+            background-color: #005f6b;
+        }
+
+        /* Анимация появления */
+        .container {
+            text-align: center;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Стили для картинки с 3D эффектом */
+        .image-container {
+            margin-bottom: 30px;
+            perspective: 800px;
+            /* Добавляем перспективу для 3D эффекта */
+        }
+
+        .image-container img {
+            width: 300px;
+            /* Размер картинки */
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.5s ease;
+        }
+
+        /* Эффект при наведении на картинку */
+        .image-container img:hover {
+            transform: rotateY(20deg) rotateX(20deg);
+            /* Поворот картинки для 3D эффекта */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Блок с изображением с 3D эффектом -->
+        <div class="image-container">
+            <!-- Картинка с 3D эффектом -->
+            <img src="https://i.gifer.com/origin/de/dea8f93fb360e56d2a55f6612a8943f3_w200.webp"
+                alt="3D изображение Telegram">
+        </div>
+
+        <h1>Добро пожаловать на мой сайт!</h1>
+        <p>Нажмите на кнопку, чтобы перейти в мой Telegram-канал:</p>
+        <a href="https://t.me/+gMUfch4a2bU5ZDVi" class="button" target="_blank">Перейти в TGK (инфа)</a>
+        <br>
+        <a href="https://t.me/batarei_mynouit_bot" class="button" target="_blank">Тг-бот🤫 (оплата)</a>
+        <br>
+        <a href="https://discord.gg/x2U3AxuxvG" class="button" target="_blank">ДС-сервер (инфа)</a>
+    </div>
+</body>
+
+</html>
