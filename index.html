@@ -77,21 +77,22 @@
         .image-container {
             margin-bottom: 30px;
             perspective: 800px;
-            /* Добавляем перспективу для 3D эффекта */
         }
 
         .image-container img {
             width: 300px;
-            /* Размер картинки */
+            /* Убедитесь, что исходное изображение поддерживает этот размер */
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             transition: transform 0.5s ease;
+            image-rendering: crisp-edges;
+            /* Убирает размытие при масштабировании */
+            will-change: transform;
+            /* Оптимизация для трансформаций */
         }
 
-        /* Эффект при наведении на картинку */
         .image-container img:hover {
             transform: rotateY(20deg) rotateX(20deg);
-            /* Поворот картинки для 3D эффекта */
         }
     </style>
 </head>
