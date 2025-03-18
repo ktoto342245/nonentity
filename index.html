@@ -6,11 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Услуги</title>
     <style>
-        /* Общие стили страницы */
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #6a11cb, #2575fc);
-            /* Градиентный фон */
             color: white;
             text-align: center;
             padding: 0;
@@ -20,6 +18,13 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+        }
+
+        .container {
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+            transition: all 0.3s ease;
         }
 
         h1 {
@@ -53,27 +58,6 @@
             transform: scale(1.1);
         }
 
-        .button:active {
-            background-color: #005f6b;
-        }
-
-        /* Анимация появления */
-        .container {
-            text-align: center;
-            animation: fadeIn 2s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
-
-            100% {
-                opacity: 1;
-            }
-        }
-
-        /* Стили для картинки с 3D эффектом */
         .image-container {
             margin-bottom: 30px;
             perspective: 800px;
@@ -81,29 +65,26 @@
 
         .image-container img {
             width: 300px;
-            /* Убедитесь, что исходное изображение поддерживает этот размер */
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             transition: transform 0.5s ease;
-            image-rendering: crisp-edges;
-            /* Убирает размытие при масштабировании */
             will-change: transform;
-            /* Оптимизация для трансформаций */
         }
 
         .image-container img:hover {
             transform: rotateY(20deg) rotateX(20deg);
         }
+
         .sidebar-menu {
             position: fixed;
             top: 20px;
             left: 20px;
             width: 250px;
-            background: linear-gradient(45deg, #ff6f61, #ff9f1c); /* Градиентный фон */
+            background: linear-gradient(45deg, #ff6f61, #ff9f1c);
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             padding: 15px;
-            z-index: 1000; /* Чтобы меню было поверх других элементов */
+            z-index: 1000;
         }
 
         .menu-toggle {
@@ -115,7 +96,6 @@
             font-size: 18px;
             cursor: pointer;
             transition: background-color 0.3s;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
         }
 
         .menu-toggle:hover {
@@ -132,7 +112,7 @@
 
         .sidebar-menu:hover .menu-items {
             opacity: 1;
-            max-height: 200px; /* Ограничение высоты, можно увеличить при необходимости */
+            max-height: 200px;
         }
 
         .menu-items a {
@@ -142,24 +122,53 @@
             text-decoration: none;
             font-size: 16px;
             font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Тень для украшения текста */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
             transition: background-color 0.3s, transform 0.3s;
         }
 
         .menu-items a:hover {
             background-color: rgba(255, 255, 255, 0.2);
-            transform: translateX(10px); /* Лёгкий сдвиг вправо при наведении */
+            transform: translateX(10px);
+        }
+
+        /* Медиа-запросы для адаптации на телефон */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+                max-width: 400px;
+                transform: translateX(-10px) scale(0.9);
+            }
+
+            h1 {
+                font-size: 2.2em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+
+            .button {
+                padding: 12px 30px;
+                font-size: 16px;
+            }
+
+            .image-container img {
+                width: 220px;
+            }
+
+            .sidebar-menu {
+                left: 10px;
+                top: 10px;
+                width: 200px;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <!-- Блок с изображением с 3D эффектом -->
         <div class="image-container">
-            <!-- Картинка с 3D эффектом -->
-            <img src="https://i.gifer.com/origin/de/dea8f93fb360e56d2a55f6612a8943f3_w200.webp"
-                alt="3D изображение Telegram">
+            <img src="https://i.gifer.com/origin/de/dea8f93fb360e56d2a55f6612a8943f3_w200.webp" alt="3D изображение Telegram">
         </div>
 
         <h1>Добро пожаловать на наш сайт Rexking!</h1>
