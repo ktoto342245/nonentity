@@ -94,6 +94,62 @@
         .image-container img:hover {
             transform: rotateY(20deg) rotateX(20deg);
         }
+        .sidebar-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 250px;
+            background: linear-gradient(45deg, #ff6f61, #ff9f1c); /* Градиентный фон */
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            z-index: 1000; /* Чтобы меню было поверх других элементов */
+        }
+
+        .menu-toggle {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .menu-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .menu-items {
+            margin-top: 10px;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease, max-height 0.3s ease;
+        }
+
+        .sidebar-menu:hover .menu-items {
+            opacity: 1;
+            max-height: 200px; /* Ограничение высоты, можно увеличить при необходимости */
+        }
+
+        .menu-items a {
+            display: block;
+            padding: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Тень для украшения текста */
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .menu-items a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(10px); /* Лёгкий сдвиг вправо при наведении */
+        }
     </style>
 </head>
 
@@ -113,6 +169,16 @@
         <a href="https://t.me/batarei_mynouit_bot" class="button" target="_blank">Тг-бот🤫 (оплата)</a>
         <br>
         <a href="https://discord.gg/x2U3AxuxvG" class="button" target="_blank">ДС-сервер (инфа)</a>
+    </div>
+        
+    <div class="sidebar-menu">
+        <div class="menu-toggle">Меню</div>
+        <div class="menu-items">
+            <a href="https://t.me/Maksim102c" target="_blank">Техподдержка</a>
+            <a href="https://t.me/a03405" target="_blank">Связаться с создателем</a>
+            <a href="#">О проекте</a>
+            <a href="https://ktoto342245.github.io/2sait/">Цены</a>
+        </div>
     </div>
 </body>
 
