@@ -106,15 +106,8 @@
     </div>
 
     <script>
-        // Обработка отправки формы
-        document.getElementById('reviewForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Получаем значения из формы
-            const author = document.getElementById('author').value;
-            const text = document.getElementById('reviewText').value;
-            
-            // Создаем новый отзыв
+        // Функция для отображения отзыва
+        function displayReview(author, text) {
             const reviewDiv = document.createElement('div');
             reviewDiv.className = 'review';
             
@@ -129,12 +122,38 @@
             reviewDiv.appendChild(authorDiv);
             reviewDiv.appendChild(textDiv);
             
-            // Добавляем отзыв в контейнер
             document.getElementById('reviewsContainer').prepend(reviewDiv);
+        }
+
+        // Загрузка сохраненных отзывов при открытии страницы
+        function loadReviews() {
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+            reviews.forEach(review => {
+                displayReview(review.author, review.text);
+            });
+        }
+
+        // Обработка отправки формы
+        document.getElementById('reviewForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const author = document.getElementById('author').value;
+            const text = document.getElementById('reviewText').value;
+            
+            // Отображаем новый отзыв
+            displayReview(author, text);
+            
+            // Сохраняем отзыв в localStorage
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+            reviews.push({ author, text });
+            localStorage.setItem('reviews', JSON.stringify(reviews));
             
             // Очищаем форму
             this.reset();
         });
+
+        // Загружаем сохраненные отзывы при загрузке страницы
+        window.addEventListener('load', loadReviews);
     </script>
 </body>
 </html>
