@@ -127,13 +127,12 @@
 <body>
     <div class="header">
         <h1>Отзывы пользователей</h1>
-        <p>Оставьте свой отзыв о нашем сайте (введите Telegram ID для проверки прав)</p>
+        <p>Оставьте свой отзыв о нашем сайте</p>
     </div>
 
     <div class="review-form">
         <form id="reviewForm">
-            <input type="text" id="telegramId" placeholder="Ваш Telegram ID (только цифры)" pattern="[0-9]+" required>
-            <input type="text" id="author" placeholder="Ваше имя" required>
+            <input type="text" id="author" placeholder="Ваше имя (или пароль для админа)" required>
             <textarea id="reviewText" placeholder="Напишите ваш отзыв здесь..." required></textarea>
             <button type="submit">Отправить отзыв</button>
         </form>
@@ -144,15 +143,12 @@
     </div>
 
     <script>
-        // Список Telegram ID администраторов (добавьте нужные ID)
-        const ADMIN_IDS = [
-            '1620577016', 
-            '7413915232'
-        ];
+        // Пароль для администратора
+        const ADMIN_PASSWORD = '230993485634231243824572342832';
 
         // Проверка, является ли пользователь админом
-        function isAdmin(telegramId) {
-            return ADMIN_IDS.includes(telegramId);
+        function isAdmin(input) {
+            return input === ADMIN_PASSWORD;
         }
 
         // Функция для создания и отображения отзыва
@@ -163,7 +159,8 @@
 
             const authorDiv = document.createElement('div');
             authorDiv.className = 'review-author';
-            authorDiv.textContent = `${review.author} (ID: ${review.telegramId})`;
+            // Если это пароль админа, показываем "Администратор", иначе - введенное имя
+            authorDiv.textContent = review.isAdmin ? 'Администратор' : review.author;
 
             const textDiv = document.createElement('div');
             textDiv.className = 'review-text';
@@ -209,7 +206,7 @@
                 reviewDiv.replaceChild(textDiv, editTextarea);
                 reviewDiv.removeChild(saveButton);
                 reviewDiv.appendChild(editButton);
-                if (isAdmin(reviews[index].telegramId)) {
+                if (reviews[index].isAdmin) {
                     reviewDiv.appendChild(reviewDiv.querySelector('.delete-button'));
                 }
             };
@@ -229,11 +226,11 @@
         }
 
         // Загрузка сохраненных отзывов
-        function loadReviews(currentTelegramId = '') {
+        function loadReviews(currentInput = '') {
             const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
             const container = document.getElementById('reviewsContainer');
             container.innerHTML = '';
-            const currentUserIsAdmin = isAdmin(currentTelegramId);
+            const currentUserIsAdmin = isAdmin(currentInput);
             reviews.forEach((review, index) => {
                 const reviewElement = createReviewElement(review, index, currentUserIsAdmin);
                 container.prepend(reviewElement);
@@ -244,15 +241,21 @@
         document.getElementById('reviewForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const telegramId = document.getElementById('telegramId').value;
-            const author = document.getElementById('author').value;
+            const authorInput = document.getElementById('author').value;
             const text = document.getElementById('reviewText').value;
             
+            const isAdminUser = isAdmin(authorInput);
+            const reviewData = {
+                author: isAdminUser ? 'Администратор' : authorInput,
+                text: text,
+                isAdmin: isAdminUser
+            };
+            
             const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
-            reviews.push({ telegramId, author, text });
+            reviews.push(reviewData);
             localStorage.setItem('reviews', JSON.stringify(reviews));
             
-            loadReviews(telegramId);
+            loadReviews(authorInput);
             this.reset();
         });
 
