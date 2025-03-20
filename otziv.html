@@ -127,7 +127,7 @@
 <body>
     <div class="header">
         <h1>Отзывы пользователей</h1>
-        <p>Оставьте свой отзыв о нашем сайте (для админ-прав используйте "admin_" в начале имени)</p>
+        <p>Оставьте свой отзыв о нашем сайте</p>
     </div>
 
     <div class="review-form">
@@ -143,9 +143,16 @@
     </div>
 
     <script>
+        // Список администраторов (добавьте нужные имена)
+        const ADMINS = [
+            'ivan',
+            'admin_maria',
+            'superuser'
+        ];
+
         // Проверка, является ли пользователь админом
         function isAdmin(author) {
-            return author.toLowerCase().startsWith('admin_');
+            return ADMINS.includes(author.toLowerCase());
         }
 
         // Функция для создания и отображения отзыва
@@ -216,10 +223,9 @@
         // Функция для удаления отзыва
         function deleteReview(index, reviewDiv) {
             const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
-            reviews.splice(index, 1); // Удаляем отзыв по индексу
+            reviews.splice(index, 1);
             localStorage.setItem('reviews', JSON.stringify(reviews));
-            reviewDiv.remove(); // Удаляем элемент из DOM
-            loadReviews(); // Перезагружаем отзывы для коррекции индексов
+            loadReviews();
         }
 
         // Загрузка сохраненных отзывов
