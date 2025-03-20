@@ -45,6 +45,8 @@
             <input type="text" id="username" placeholder="Введите ваше имя" required>
             <button type="submit">Войти</button>
         </form>
+        <!-- Скрытая ссылка для перехода -->
+        <a id="redirectLink" href="reviews.html" style="display: none;">Перейти</a>
     </div>
 
     <script>
@@ -70,7 +72,7 @@
             // Если пользователь не админ и уже зарегистрирован
             if (!isAdminUser && existingUser.id) {
                 alert('Вы уже зарегистрированы! Обычные пользователи могут регистрироваться только один раз.');
-                window.location.href = 'reviews.html';
+                document.getElementById('redirectLink').click(); // Активируем ссылку
                 return;
             }
 
@@ -84,8 +86,8 @@
                 localStorage.setItem('isAdmin', 'true');
             }
 
-            // Переход на страницу отзывов
-            window.location.href = 'otziv.html';
+            // Активируем ссылку для перехода
+            document.getElementById('https://ktoto342245.github.io/nonentity/otziv.html').click();
         });
     </script>
 </body>
