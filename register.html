@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .register-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .register-form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .register-form button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .register-form button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-form">
+        <h2>Регистрация</h2>
+        <form id="registerForm">
+            <input type="text" id="username" placeholder="Введите ваше имя" required>
+            <button type="submit">Войти</button>
+        </form>
+    </div>
+
+    <script>
+        // Пароль администратора
+        const ADMIN_PASSWORD = '230993485634231243824572342832';
+
+        // Генерация случайного ID (имитация IP)
+        function generateUserId() {
+            return 'user_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Проверка, является ли пользователь админом
+        function isAdmin(input) {
+            return input === ADMIN_PASSWORD;
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const isAdminUser = isAdmin(username);
+            const existingUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+            // Если пользователь не админ и уже зарегистрирован
+            if (!isAdminUser && existingUser.id) {
+                alert('Вы уже зарегистрированы! Обычные пользователи могут регистрироваться только один раз.');
+                window.location.href = 'reviews.html';
+                return;
+            }
+
+            // Генерируем новый ID только для обычных пользователей или если админ регистрируется заново
+            const userId = isAdminUser || !existingUser.id ? generateUserId() : existingUser.id;
+            const userData = { id: userId, name: username };
+
+            // Сохраняем данные пользователя
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            if (isAdminUser) {
+                localStorage.setItem('isAdmin', 'true');
+            }
+
+            // Переход на страницу отзывов
+            window.location.href = 'reviews.html';
+        });
+    </script>
+</body>
+</html>
