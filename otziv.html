@@ -70,6 +70,7 @@
         .review {
             border-bottom: 1px solid #eee;
             padding: 15px 0;
+            position: relative;
         }
         
         .review:last-child {
@@ -84,13 +85,49 @@
         
         .review-text {
             color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .edit-button, .delete-button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        
+        .edit-button {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .edit-button:hover {
+            background-color: #1976D2;
+        }
+        
+        .delete-button {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .delete-button:hover {
+            background-color: #d32f2f;
+        }
+        
+        .edit-textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>Отзывы пользователей</h1>
-        <p>Оставьте свой отзыв о нашем сайте</p>
+        <p>Оставьте свой отзыв о нашем сайте (для админ-прав используйте "admin_" в начале имени)</p>
     </div>
 
     <div class="review-form">
@@ -106,30 +143,94 @@
     </div>
 
     <script>
-        // Функция для отображения отзыва
-        function displayReview(author, text) {
-            const reviewDiv = document.createElement('div');
-            reviewDiv.className = 'review';
-            
-            const authorDiv = document.createElement('div');
-            authorDiv.className = 'review-author';
-            authorDiv.textContent = author;
-            
-            const textDiv = document.createElement('div');
-            textDiv.className = 'review-text';
-            textDiv.textContent = text;
-            
-            reviewDiv.appendChild(authorDiv);
-            reviewDiv.appendChild(textDiv);
-            
-            document.getElementById('reviewsContainer').prepend(reviewDiv);
+        // Проверка, является ли пользователь админом
+        function isAdmin(author) {
+            return author.toLowerCase().startsWith('admin_');
         }
 
-        // Загрузка сохраненных отзывов при открытии страницы
-        function loadReviews() {
+        // Функция для создания и отображения отзыва
+        function createReviewElement(review, index, currentUserIsAdmin) {
+            const reviewDiv = document.createElement('div');
+            reviewDiv.className = 'review';
+            reviewDiv.dataset.index = index;
+
+            const authorDiv = document.createElement('div');
+            authorDiv.className = 'review-author';
+            authorDiv.textContent = review.author;
+
+            const textDiv = document.createElement('div');
+            textDiv.className = 'review-text';
+            textDiv.textContent = review.text;
+
+            const editButton = document.createElement('button');
+            editButton.className = 'edit-button';
+            editButton.textContent = 'Редактировать';
+            editButton.onclick = () => editReview(index, reviewDiv, textDiv);
+
+            reviewDiv.appendChild(authorDiv);
+            reviewDiv.appendChild(textDiv);
+            reviewDiv.appendChild(editButton);
+
+            // Добавляем кнопку удаления только для админов
+            if (currentUserIsAdmin) {
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'delete-button';
+                deleteButton.textContent = 'Удалить';
+                deleteButton.onclick = () => deleteReview(index, reviewDiv);
+                reviewDiv.appendChild(deleteButton);
+            }
+
+            return reviewDiv;
+        }
+
+        // Функция для редактирования отзыва
+        function editReview(index, reviewDiv, textDiv) {
             const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
-            reviews.forEach(review => {
-                displayReview(review.author, review.text);
+            const currentText = reviews[index].text;
+
+            const editTextarea = document.createElement('textarea');
+            editTextarea.className = 'edit-textarea';
+            editTextarea.value = currentText;
+
+            const saveButton = document.createElement('button');
+            saveButton.className = 'edit-button';
+            saveButton.textContent = 'Сохранить';
+            saveButton.onclick = () => {
+                reviews[index].text = editTextarea.value;
+                localStorage.setItem('reviews', JSON.stringify(reviews));
+                textDiv.textContent = editTextarea.value;
+                reviewDiv.replaceChild(textDiv, editTextarea);
+                reviewDiv.removeChild(saveButton);
+                reviewDiv.appendChild(editButton);
+                if (isAdmin(reviews[index].author)) {
+                    reviewDiv.appendChild(reviewDiv.querySelector('.delete-button'));
+                }
+            };
+
+            const editButton = reviewDiv.querySelector('.edit-button');
+            reviewDiv.replaceChild(editTextarea, textDiv);
+            reviewDiv.removeChild(editButton);
+            reviewDiv.appendChild(saveButton);
+        }
+
+        // Функция для удаления отзыва
+        function deleteReview(index, reviewDiv) {
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+            reviews.splice(index, 1); // Удаляем отзыв по индексу
+            localStorage.setItem('reviews', JSON.stringify(reviews));
+            reviewDiv.remove(); // Удаляем элемент из DOM
+            loadReviews(); // Перезагружаем отзывы для коррекции индексов
+        }
+
+        // Загрузка сохраненных отзывов
+        function loadReviews(currentAuthor = '') {
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+            const container = document.getElementById('reviewsContainer');
+            container.innerHTML = '';
+            const currentUserIsAdmin = isAdmin(currentAuthor);
+            reviews.forEach((review, index) => {
+                const reviewElement = createReviewElement(review, index, currentUserIsAdmin);
+                container.prepend(reviewElement);
             });
         }
 
@@ -140,20 +241,16 @@
             const author = document.getElementById('author').value;
             const text = document.getElementById('reviewText').value;
             
-            // Отображаем новый отзыв
-            displayReview(author, text);
-            
-            // Сохраняем отзыв в localStorage
             const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
             reviews.push({ author, text });
             localStorage.setItem('reviews', JSON.stringify(reviews));
             
-            // Очищаем форму
+            loadReviews(author);
             this.reset();
         });
 
-        // Загружаем сохраненные отзывы при загрузке страницы
-        window.addEventListener('load', loadReviews);
+        // Загружаем отзывы при загрузке страницы
+        window.addEventListener('load', () => loadReviews());
     </script>
 </body>
 </html>
