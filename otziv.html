@@ -127,11 +127,12 @@
 <body>
     <div class="header">
         <h1>Отзывы пользователей</h1>
-        <p>Оставьте свой отзыв о нашем сайте</p>
+        <p>Оставьте свой отзыв о нашем сайте (введите Telegram ID для проверки прав)</p>
     </div>
 
     <div class="review-form">
         <form id="reviewForm">
+            <input type="text" id="telegramId" placeholder="Ваш Telegram ID (только цифры)" pattern="[0-9]+" required>
             <input type="text" id="author" placeholder="Ваше имя" required>
             <textarea id="reviewText" placeholder="Напишите ваш отзыв здесь..." required></textarea>
             <button type="submit">Отправить отзыв</button>
@@ -143,16 +144,16 @@
     </div>
 
     <script>
-        // Список администраторов (добавьте нужные имена)
-        const ADMINS = [
-            'ivan',
-            'admin_maria',
-            'superuser'
+        // Список Telegram ID администраторов (добавьте нужные ID)
+        const ADMIN_IDS = [
+            '123456789',  // Замените на реальные Telegram ID
+            '987654321',
+            '555555555'
         ];
 
         // Проверка, является ли пользователь админом
-        function isAdmin(author) {
-            return ADMINS.includes(author.toLowerCase());
+        function isAdmin(telegramId) {
+            return ADMIN_IDS.includes(telegramId);
         }
 
         // Функция для создания и отображения отзыва
@@ -163,7 +164,7 @@
 
             const authorDiv = document.createElement('div');
             authorDiv.className = 'review-author';
-            authorDiv.textContent = review.author;
+            authorDiv.textContent = `${review.author} (ID: ${review.telegramId})`;
 
             const textDiv = document.createElement('div');
             textDiv.className = 'review-text';
@@ -209,7 +210,7 @@
                 reviewDiv.replaceChild(textDiv, editTextarea);
                 reviewDiv.removeChild(saveButton);
                 reviewDiv.appendChild(editButton);
-                if (isAdmin(reviews[index].author)) {
+                if (isAdmin(reviews[index].telegramId)) {
                     reviewDiv.appendChild(reviewDiv.querySelector('.delete-button'));
                 }
             };
@@ -229,11 +230,11 @@
         }
 
         // Загрузка сохраненных отзывов
-        function loadReviews(currentAuthor = '') {
+        function loadReviews(currentTelegramId = '') {
             const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
             const container = document.getElementById('reviewsContainer');
             container.innerHTML = '';
-            const currentUserIsAdmin = isAdmin(currentAuthor);
+            const currentUserIsAdmin = isAdmin(currentTelegramId);
             reviews.forEach((review, index) => {
                 const reviewElement = createReviewElement(review, index, currentUserIsAdmin);
                 container.prepend(reviewElement);
@@ -244,14 +245,15 @@
         document.getElementById('reviewForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const telegramId = document.getElementById('telegramId').value;
             const author = document.getElementById('author').value;
             const text = document.getElementById('reviewText').value;
             
             const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
-            reviews.push({ author, text });
+            reviews.push({ telegramId, author, text });
             localStorage.setItem('reviews', JSON.stringify(reviews));
             
-            loadReviews(author);
+            loadReviews(telegramId);
             this.reset();
         });
 
