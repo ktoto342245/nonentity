@@ -151,6 +151,16 @@
             return input === ADMIN_PASSWORD;
         }
 
+        // Получение текущего статуса админа из localStorage
+        function getCurrentAdminStatus() {
+            return localStorage.getItem('isAdmin') === 'true';
+        }
+
+        // Установка статуса админа в localStorage
+        function setAdminStatus(isAdmin) {
+            localStorage.setItem('isAdmin', isAdmin);
+        }
+
         // Функция для создания и отображения отзыва
         function createReviewElement(review, index, currentUserIsAdmin) {
             const reviewDiv = document.createElement('div');
@@ -159,7 +169,6 @@
 
             const authorDiv = document.createElement('div');
             authorDiv.className = 'review-author';
-            // Если это пароль админа, показываем "Администратор", иначе - введенное имя
             authorDiv.textContent = review.isAdmin ? 'Администратор' : review.author;
 
             const textDiv = document.createElement('div');
@@ -206,8 +215,12 @@
                 reviewDiv.replaceChild(textDiv, editTextarea);
                 reviewDiv.removeChild(saveButton);
                 reviewDiv.appendChild(editButton);
-                if (reviews[index].isAdmin) {
-                    reviewDiv.appendChild(reviewDiv.querySelector('.delete-button'));
+                if (getCurrentAdminStatus()) {
+                    const deleteButton = document.createElement('button');
+                    deleteButton.className = 'delete-button';
+                    deleteButton.textContent = 'Удалить';
+                    deleteButton.onclick = () => deleteReview(index, reviewDiv);
+                    reviewDiv.appendChild(deleteButton);
                 }
             };
 
@@ -222,15 +235,15 @@
             const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
             reviews.splice(index, 1);
             localStorage.setItem('reviews', JSON.stringify(reviews));
-            loadReviews();
+            loadReviews(); // Теперь статус админа сохраняется
         }
 
         // Загрузка сохраненных отзывов
-        function loadReviews(currentInput = '') {
+        function loadReviews() {
             const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
             const container = document.getElementById('reviewsContainer');
             container.innerHTML = '';
-            const currentUserIsAdmin = isAdmin(currentInput);
+            const currentUserIsAdmin = getCurrentAdminStatus();
             reviews.forEach((review, index) => {
                 const reviewElement = createReviewElement(review, index, currentUserIsAdmin);
                 container.prepend(reviewElement);
@@ -251,11 +264,16 @@
                 isAdmin: isAdminUser
             };
             
+            // Сохраняем статус админа, если введен пароль
+            if (isAdminUser) {
+                setAdminStatus(true);
+            }
+            
             const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
             reviews.push(reviewData);
             localStorage.setItem('reviews', JSON.stringify(reviews));
             
-            loadReviews(authorInput);
+            loadReviews();
             this.reset();
         });
 
