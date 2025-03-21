@@ -162,6 +162,41 @@
                 width: 200px;
             }
         }
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ccc;
+        }
+
+        .services-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 15px;
+            background-color: #f5e6e1;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+        }
     </style>
 </head>
 
@@ -190,6 +225,12 @@
             <a href="https://ktoto342245.github.io/nonentity/helping.html">О проекте</a>
             <a href="https://ktoto342245.github.io/2sait/">Цены</a>
         </div>
+    </div>
+    <div class="profile-container">
+        <img src="https://example.com/avatar.jpg" alt="Аватар" class="avatar">
+        <button class="services-btn">
+            <span class="icon">S</span> услуги
+        </button>
     </div>
 </body>
 
