@@ -163,6 +163,29 @@
                 width: 200px;
             }
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 20% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            text-align: center;
+        }
+        .close {
+            color: red;
+            font-size: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -186,11 +209,26 @@
     <div class="sidebar-menu">
         <div class="menu-toggle">Меню</div>
         <div class="menu-items">
-            <a href="@Maksim102c" target="_blank">Техподдержка</a>
+            <a href="#" onclick="openModal()" target="_blank">Техподдержка</a>
             <a href="https://t.me/Helpmepls53" target="_blank">Связаться с создателем</a>
             <a href="https://ktoto342245.github.io/nonentity/helping.html">О проекте</a>
             <a href="https://ktoto342245.github.io/2sait/">Цены</a>
         </div>
+        <div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p>@Maksim102c</p>
+    </div>
+</div>
+
+<script>
+    function openModal() {
+        document.getElementById("myModal").style.display = "block";
+    }
+    function closeModal() {
+        document.getElementById("myModal").style.display = "none";
+    }
+</script>
 </body>
 
 </html>
