@@ -118,10 +118,17 @@
             color: #888;
             font-size: 12px;
         }
+
+        .review-count {
+            margin-top: 15px;
+            font-size: 16px;
+            color: #555;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <!-- Верхня панель -->
+    <!-- Верхняя панель -->
     <div class="top-bar">
         <h1>Отзывы</h1>
         <div class="search-bar">
@@ -129,9 +136,9 @@
         </div>
     </div>
 
-    <!-- Основний вміст -->
+    <!-- Основной контент -->
     <div class="container">
-        <!-- Форма для додавання відгуку -->
+        <!-- Форма для добавления отзыва -->
         <div class="review-form">
             <h2>Оставьте свой отзыв</h2>
             <input type="text" id="username" placeholder="Ваше имя или никнейм">
@@ -139,18 +146,21 @@
             <button onclick="addReview()">Отправить</button>
         </div>
 
-        <!-- Список відгуків -->
+        <!-- Список отзывов -->
         <div class="reviews-list" id="reviewsList">
-            <!-- Відгуки додаватимуться сюди через JavaScript -->
+            <!-- Отзывы будут добавляться сюда через JavaScript -->
         </div>
+
+        <!-- Элемент для отображения количества отзывов -->
+        <div class="review-count" id="reviewCount">Всего отзывов: 0</div>
     </div>
 
-    <!-- Підключення Firebase -->
+    <!-- Подключение Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-        // Конфігурація Firebase
+        // Конфигурация Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAxp9yWxNndxvbJ_OpogAkDWjdqpOWuGbg",
             authDomain: "sait-4c17b.firebaseapp.com",
@@ -158,14 +168,14 @@
             storageBucket: "sait-4c17b.firebasestorage.app",
             messagingSenderId: "839932702171",
             appId: "1:839932702171:web:81c83b75faba16f90b4bfe",
-            measurementId: "G-28M72NML99"
+            measurementId: "G-28M72NML99"
         };
 
-        // Ініціалізація Firebase
+        // Инициализация Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Функція для додавання відгуку
+        // Функция для добавления отзыва
         window.addReview = async function() {
             const username = document.getElementById('username').value;
             const reviewText = document.getElementById('reviewText').value;
@@ -189,10 +199,13 @@
             }
         };
 
-        // Функція для відображення відгуків у реальному часі
+        // Функция для отображения отзывов в реальном времени
         const reviewsList = document.getElementById('reviewsList');
+        const reviewCount = document.getElementById('reviewCount');
         onSnapshot(collection(db, "reviews"), (snapshot) => {
             reviewsList.innerHTML = '';
+            let count = 0; // Счетчик отзывов
+
             snapshot.forEach((doc) => {
                 const review = doc.data();
                 const reviewItem = document.createElement('div');
@@ -203,18 +216,29 @@
                     <div class="timestamp">${new Date(review.timestamp).toLocaleString()}</div>
                 `;
                 reviewsList.appendChild(reviewItem);
+                count++; // Увеличиваем счетчик
             });
+
+            // Обновляем текст с количеством отзывов
+            reviewCount.textContent = `Всего отзывов: ${count}`;
         });
 
-        // Пошук відгуків
+        // Поиск отзывов
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchText = e.target.value.toLowerCase();
             const reviewItems = document.querySelectorAll('.review-item');
+            let visibleCount = 0; // Счетчик видимых отзывов после фильтрации
+
             reviewItems.forEach(item => {
                 const username = item.querySelector('.username').textContent.toLowerCase();
                 const text = item.querySelector('p').textContent.toLowerCase();
-                item.style.display = (username.includes(searchText) || text.includes(searchText)) ? 'block' : 'none';
+                const isVisible = username.includes(searchText) || text.includes(searchText);
+                item.style.display = isVisible ? 'block' : 'none';
+                if (isVisible) visibleCount++; // Увеличиваем счетчик видимых отзывов
             });
+
+            // Обновляем текст с количеством отзывов после фильтрации
+            reviewCount.textContent = `Всего отзывов: ${reviewItems.length} (показано: ${visibleCount})`;
         });
     </script>
 </body>
