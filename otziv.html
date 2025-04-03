@@ -293,6 +293,15 @@
         let isAdmin = false;
         let ADMIN_PASSWORD = null;
 
+        // Список запрещённых слов (добавляйте новые слова сюда)
+        const forbiddenWords = [
+            "создатель",
+            "Sozdatrl", "sozdatrl",
+            "Admin", "admin", "Админ", "админ", "админус",
+            "создательс",
+            "пидорасик", "пидорас", "Пидорас", "Пидорасик", "Пидор"
+        ];
+
         async function loadAdminPassword() {
             try {
                 const adminDocRef = doc(db, "adminConfig", "settings");
@@ -412,8 +421,9 @@
                     alert('Заполните поле имени!');
                     return;
                 }
-                if (username.toLowerCase().includes("создатель")) {
-                    alert('Вы не можете притвориться создателем!');
+                // Проверка на запрещённые слова
+                if (forbiddenWords.some(word => username.toLowerCase().includes(word.toLowerCase()))) {
+                    alert(`Никнейм "${username}" содержит запрещённое слово! Выберите другой.`);
                     document.getElementById('username').value = '';
                     return;
                 }
@@ -475,8 +485,9 @@
                     alert('Заполните поле имени!');
                     return;
                 }
-                if (replyUsername.toLowerCase().includes("создатель")) {
-                    alert('Вы не можете притвориться создателем!');
+                // Проверка на запрещённые слова
+                if (forbiddenWords.some(word => replyUsername.toLowerCase().includes(word.toLowerCase()))) {
+                    alert(`Никнейм "${replyUsername}" содержит запрещённое слово! Выберите другой.`);
                     document.getElementById(`reply-username-${reviewId}`).value = '';
                     return;
                 }
