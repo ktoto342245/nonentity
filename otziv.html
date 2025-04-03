@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -200,8 +201,52 @@
             font-size: 14px;
             margin-top: 5px;
         }
+
+        /* Стили для невидимой кнопки и кнопок управления */
+        .admin-button {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .block-button {
+            background-color: #ff4444;
+            color: white;
+            padding: 4px 8px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .block-button:hover {
+            background-color: #cc0000;
+        }
+
+        .unblock-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .unblock-button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
+
 <body>
     <!-- Верхняя панель -->
     <div class="top-bar">
@@ -210,6 +255,9 @@
             <input type="text" placeholder="Поиск отзывов..." id="searchInput">
         </div>
     </div>
+
+    <!-- Невидимая кнопка для админа -->
+    <button class="admin-button" onclick="promptAdminPassword()"></button>
 
     <!-- Основной контент -->
     <div class="container">
@@ -232,7 +280,7 @@
     <!-- Подключение Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
         // Конфигурация Firebase
         const firebaseConfig = {
@@ -249,8 +297,12 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Функция для получения IP-адреса пользователя
+        // Переменные для IP и статуса админа
         let userIP = null;
+        let isAdmin = false;
+        const ADMIN_PASSWORD = "23284782374826473826"; // Установлен ваш пароль
+
+        // Функция для получения IP-адреса пользователя
         async function getUserIP() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
@@ -258,15 +310,84 @@
                 userIP = data.ip;
             } catch (e) {
                 console.error("Ошибка при получении IP-адреса: ", e);
-                userIP = 'unknown'; // Резервное значение, если не удалось получить IP
+                userIP = 'unknown';
             }
         }
 
         // Вызываем функцию получения IP при загрузке страницы
         getUserIP();
 
+        // Проверка пароля для входа в режим админа
+        window.promptAdminPassword = function () {
+            const password = prompt("Введите пароль администратора:");
+            if (password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                alert("Вы вошли как администратор!");
+                showAdminControls();
+            } else {
+                alert("Неверный пароль!");
+            }
+        };
+
+        // Показать кнопки управления для админа
+        function showAdminControls() {
+            const blockButtons = document.querySelectorAll('.block-button');
+            const unblockButtons = document.querySelectorAll('.unblock-button');
+            blockButtons.forEach(button => button.style.display = 'inline-block');
+            unblockButtons.forEach(button => button.style.display = 'inline-block');
+        }
+
+        // Проверка, заблокирован ли IP
+        async function isIPBlocked(ip) {
+            const blockRef = doc(db, "blockedIPs", ip);
+            const blockDoc = await getDoc(blockRef);
+            return blockDoc.exists();
+        }
+
+        // Проверка, оставлял ли IP отзыв
+        async function hasIPReviewed(ip) {
+            const ipRef = doc(db, "reviewedIPs", ip);
+            const ipDoc = await getDoc(ipRef);
+            return ipDoc.exists();
+        }
+
+        // Блокировка IP
+        window.blockUser = async function (ip, reviewId) {
+            if (!isAdmin) {
+                alert("Только администратор может блокировать пользователей!");
+                return;
+            }
+
+            try {
+                await setDoc(doc(db, "blockedIPs", ip), {
+                    blockedAt: new Date().toISOString(),
+                    reviewId: reviewId
+                });
+                alert(`IP ${ip} заблокирован!`);
+            } catch (e) {
+                console.error("Ошибка при блокировке IP: ", e);
+            }
+        };
+
+        // Разблокировка IP
+        window.unblockUser = async function (ip) {
+            if (!isAdmin) {
+                alert("Только администратор может разблокировать пользователей!");
+                return;
+            }
+
+            try {
+                const blockRef = doc(db, "blockedIPs", ip);
+                await deleteDoc(blockRef);
+                alert(`IP ${ip} разблокирован!`);
+            } catch (e) {
+                console.error("Ошибка при разблокировке IP: ", e);
+                alert("Не удалось разблокировать IP. Проверьте консоль для подробностей.");
+            }
+        };
+
         // Функция для добавления отзыва
-        window.addReview = async function() {
+        window.addReview = async function () {
             const username = document.getElementById('username').value;
             const reviewText = document.getElementById('reviewText').value;
 
@@ -280,16 +401,34 @@
                 return;
             }
 
+            if (await isIPBlocked(userIP)) {
+                alert('Ваш IP заблокирован, вы не можете оставлять отзывы!');
+                return;
+            }
+
+            if (await hasIPReviewed(userIP)) {
+                alert('Вы уже оставили отзыв. Разрешён только один отзыв с одного IP!');
+                return;
+            }
+
             try {
-                await addDoc(collection(db, "reviews"), {
+                const reviewDoc = await addDoc(collection(db, "reviews"), {
                     username: username,
                     text: reviewText,
                     timestamp: new Date().toISOString(),
                     likes: 0,
                     likedBy: [],
                     replies: [],
-                    isRepliesExpanded: false
+                    isRepliesExpanded: false,
+                    ip: userIP
                 });
+
+                // Записываем IP как использованный для отзыва
+                await setDoc(doc(db, "reviewedIPs", userIP), {
+                    reviewId: reviewDoc.id,
+                    timestamp: new Date().toISOString()
+                });
+
                 document.getElementById('username').value = '';
                 document.getElementById('reviewText').value = '';
                 alert('Отзыв успешно добавлен!');
@@ -299,7 +438,7 @@
         };
 
         // Функция для добавления ответа
-        window.addReply = async function(reviewId) {
+        window.addReply = async function (reviewId) {
             const replyUsername = document.getElementById(`reply-username-${reviewId}`).value;
             const replyText = document.getElementById(`reply-text-${reviewId}`).value;
 
@@ -313,9 +452,14 @@
                 return;
             }
 
+            // Убрана проверка на блокировку IP для ответов, чтобы человек мог писать ответы даже если заблокирован
+            // if (await isIPBlocked(userIP)) {
+            //     alert('Ваш IP заблокирован, вы не можете оставлять ответы!');
+            //     return;
+            // }
+
             const reviewRef = doc(db, "reviews", reviewId);
             try {
-                // Получаем текущие данные отзыва
                 const reviewDoc = await getDoc(reviewRef);
                 if (!reviewDoc.exists()) {
                     console.error("Отзыв не найден");
@@ -328,10 +472,9 @@
                     username: replyUsername,
                     text: replyText,
                     timestamp: new Date().toISOString(),
-                    ip: userIP // Сохраняем IP-адрес пользователя, оставившего ответ
+                    ip: userIP
                 });
 
-                // Обновляем документ в Firestore
                 await updateDoc(reviewRef, {
                     replies: replies,
                     isRepliesExpanded: true
@@ -346,7 +489,7 @@
         };
 
         // Функция для сворачивания/разворачивания ответов
-        window.toggleReplies = async function(reviewId, isExpanded) {
+        window.toggleReplies = async function (reviewId, isExpanded) {
             const reviewRef = doc(db, "reviews", reviewId);
             try {
                 await updateDoc(reviewRef, {
@@ -358,7 +501,7 @@
         };
 
         // Функция для лайка/дизлайка отзыва
-        window.toggleLike = async function(reviewId) {
+        window.toggleLike = async function (reviewId) {
             if (!userIP) {
                 alert('Не удалось определить ваш IP-адрес. Пожалуйста, попробуйте снова.');
                 return;
@@ -366,7 +509,6 @@
 
             const reviewRef = doc(db, "reviews", reviewId);
             try {
-                // Получаем текущие данные отзыва
                 const reviewDoc = await getDoc(reviewRef);
                 if (!reviewDoc.exists()) {
                     console.error("Отзыв не найден");
@@ -377,20 +519,16 @@
                 let newLikes = review.likes || 0;
                 let likedBy = review.likedBy || [];
 
-                // Проверяем, лайкнул ли уже пользователь с этим IP
                 const hasLiked = likedBy.includes(userIP);
 
                 if (hasLiked) {
-                    // Убираем лайк
                     newLikes = Math.max(0, newLikes - 1);
                     likedBy = likedBy.filter(ip => ip !== userIP);
                 } else {
-                    // Добавляем лайк
                     newLikes += 1;
                     likedBy.push(userIP);
                 }
 
-                // Обновляем документ в Firestore
                 await updateDoc(reviewRef, {
                     likes: newLikes,
                     likedBy: likedBy
@@ -414,14 +552,10 @@
                 reviewItem.className = 'review-item';
                 reviewItem.setAttribute('data-id', reviewId);
 
-                // Проверяем, лайкнул ли текущий пользователь (по IP)
                 const isLiked = userIP && review.likedBy && review.likedBy.includes(userIP);
-
-                // Проверяем состояние сворачивания/разворачивания
                 const isRepliesExpanded = review.isRepliesExpanded || false;
                 const replies = review.replies || [];
 
-                // Формируем HTML для отзыва
                 let reviewHTML = `
                     <div class="username">${review.username}</div>
                     <p>${review.text}</p>
@@ -432,6 +566,8 @@
                         </button>
                         <span class="like-count">${review.likes || 0}</span>
                     </div>
+                    <button class="block-button" onclick="blockUser('${review.ip}', '${reviewId}')">Заблокировать IP</button>
+                    <button class="unblock-button" onclick="unblockUser('${review.ip}')">Разблокировать IP</button>
                     <div class="reply-section">
                         <div class="reply-form">
                             <input type="text" id="reply-username-${reviewId}" placeholder="Ваше имя">
@@ -440,7 +576,6 @@
                         </div>
                 `;
 
-                // Добавляем ответы, если они есть
                 if (replies.length > 0) {
                     reviewHTML += `
                         <button class="toggle-replies" onclick="toggleReplies('${reviewId}', ${isRepliesExpanded})">
@@ -467,10 +602,11 @@
             });
 
             reviewCount.textContent = `Всего отзывов: ${count}`;
+            if (isAdmin) showAdminControls();
         });
 
         // Поиск отзывов
-        document.getElementById('searchInput').addEventListener('input', function(e) {
+        document.getElementById('searchInput').addEventListener('input', function (e) {
             const searchText = e.target.value.toLowerCase();
             const reviewItems = document.querySelectorAll('.review-item');
             let visibleCount = 0;
@@ -487,4 +623,5 @@
         });
     </script>
 </body>
+
 </html>
