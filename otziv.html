@@ -56,7 +56,8 @@
             margin-bottom: 20px;
         }
 
-        .review-form input[type="text"] {
+        .review-form input[type="text"],
+        .reply-form input[type="text"] {
             width: 100%;
             padding: 10px;
             border-radius: 5px;
@@ -64,26 +65,29 @@
             margin-bottom: 10px;
         }
 
-        .review-form textarea {
+        .review-form textarea,
+        .reply-form textarea {
             width: 100%;
-            height: 100px;
+            height: 60px;
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ddd;
             margin-bottom: 10px;
         }
 
-        .review-form button {
+        .review-form button,
+        .reply-form button {
             background-color: #00bfff;
             color: white;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border: none;
             border-radius: 20px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
 
-        .review-form button:hover {
+        .review-form button:hover,
+        .reply-form button:hover {
             background-color: #008bb0;
         }
 
@@ -142,13 +146,59 @@
         }
 
         .like-button.liked {
-            color: #ff4d4d; /* Красный цвет для заполненного сердечка */
+            color: #ff4d4d;
         }
 
         .like-count {
             margin-left: 5px;
             font-size: 14px;
             color: #555;
+        }
+
+        .reply-section {
+            margin-top: 10px;
+        }
+
+        .reply-form {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .replies-list {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .reply-item {
+            padding: 5px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .reply-item .username {
+            font-weight: bold;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .reply-item p {
+            margin: 2px 0;
+            font-size: 14px;
+        }
+
+        .reply-item .timestamp {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .toggle-replies {
+            background: none;
+            border: none;
+            color: #2575fc;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -214,14 +264,62 @@
                     username: username,
                     text: reviewText,
                     timestamp: new Date().toISOString(),
-                    likes: 0, // Изначально 0 лайков
-                    likedBy: [] // Массив для хранения пользователей, которые лайкнули
+                    likes: 0,
+                    likedBy: [],
+                    replies: [], // Массив для хранения ответов
+                    isRepliesExpanded: false // Состояние сворачивания/разворачивания
                 });
                 document.getElementById('username').value = '';
                 document.getElementById('reviewText').value = '';
                 alert('Отзыв успешно добавлен!');
             } catch (e) {
                 console.error("Ошибка при добавлении отзыва: ", e);
+            }
+        };
+
+        // Функция для добавления ответа
+        window.addReply = async function(reviewId) {
+            const replyUsername = document.getElementById(`reply-username-${reviewId}`).value;
+            const replyText = document.getElementById(`reply-text-${reviewId}`).value;
+
+            if (replyUsername.trim() === '' || replyText.trim() === '') {
+                alert('Пожалуйста, заполните все поля (имя и текст ответа)!');
+                return;
+            }
+
+            const reviewRef = doc(db, "reviews", reviewId);
+            try {
+                const reviewDoc = await onSnapshot(doc(db, "reviews", reviewId), (doc) => {
+                    const review = doc.data();
+                    const replies = review.replies || [];
+                    replies.push({
+                        username: replyUsername,
+                        text: replyText,
+                        timestamp: new Date().toISOString()
+                    });
+
+                    updateDoc(reviewRef, {
+                        replies: replies,
+                        isRepliesExpanded: true // Разворачиваем ответы после добавления
+                    });
+
+                    document.getElementById(`reply-username-${reviewId}`).value = '';
+                    document.getElementById(`reply-text-${reviewId}`).value = '';
+                });
+            } catch (e) {
+                console.error("Ошибка при добавлении ответа: ", e);
+            }
+        };
+
+        // Функция для сворачивания/разворачивания ответов
+        window.toggleReplies = async function(reviewId, isExpanded) {
+            const reviewRef = doc(db, "reviews", reviewId);
+            try {
+                await updateDoc(reviewRef, {
+                    isRepliesExpanded: !isExpanded
+                });
+            } catch (e) {
+                console.error("Ошибка при обновлении состояния ответов: ", e);
             }
         };
 
@@ -234,16 +332,21 @@
 
             snapshot.forEach((doc) => {
                 const review = doc.data();
-                const reviewId = doc.id; // ID документа в Firestore
+                const reviewId = doc.id;
                 const reviewItem = document.createElement('div');
                 reviewItem.className = 'review-item';
-                reviewItem.setAttribute('data-id', reviewId); // Сохраняем ID отзыва
+                reviewItem.setAttribute('data-id', reviewId);
 
-                // Проверяем, лайкнул ли текущий пользователь (для примера используем localStorage)
-                const userId = localStorage.getItem('userId') || 'anonymous'; // Простой способ идентификации пользователя
+                // Проверяем, лайкнул ли текущий пользователь
+                const userId = localStorage.getItem('userId') || 'anonymous';
                 const isLiked = review.likedBy && review.likedBy.includes(userId);
 
-                reviewItem.innerHTML = `
+                // Проверяем состояние сворачивания/разворачивания
+                const isRepliesExpanded = review.isRepliesExpanded || false;
+                const replies = review.replies || [];
+
+                // Формируем HTML для отзыва
+                let reviewHTML = `
                     <div class="username">${review.username}</div>
                     <p>${review.text}</p>
                     <div class="timestamp">${new Date(review.timestamp).toLocaleString()}</div>
@@ -253,9 +356,38 @@
                         </button>
                         <span class="like-count">${review.likes || 0}</span>
                     </div>
+                    <div class="reply-section">
+                        <div class="reply-form">
+                            <input type="text" id="reply-username-${reviewId}" placeholder="Ваше имя">
+                            <textarea id="reply-text-${reviewId}" placeholder="Ваш ответ..."></textarea>
+                            <button onclick="addReply('${reviewId}')">Ответить</button>
+                        </div>
                 `;
+
+                // Добавляем ответы, если они есть
+                if (replies.length > 0) {
+                    reviewHTML += `
+                        <button class="toggle-replies" onclick="toggleReplies('${reviewId}', ${isRepliesExpanded})">
+                            ${isRepliesExpanded ? 'Свернуть ответы' : `Развернуть ответы (${replies.length})`}
+                        </button>
+                        <div class="replies-list" style="display: ${isRepliesExpanded ? 'block' : 'none'};">
+                    `;
+                    replies.forEach(reply => {
+                        reviewHTML += `
+                            <div class="reply-item">
+                                <div class="username">${reply.username}</div>
+                                <p>${reply.text}</p>
+                                <div class="timestamp">${new Date(reply.timestamp).toLocaleString()}</div>
+                            </div>
+                        `;
+                    });
+                    reviewHTML += `</div>`;
+                }
+
+                reviewHTML += `</div>`; // Закрываем reply-section
+                reviewItem.innerHTML = reviewHTML;
                 reviewsList.appendChild(reviewItem);
-                count++; // Увеличиваем счетчик
+                count++;
             });
 
             // Обновляем текст с количеством отзывов
@@ -264,7 +396,7 @@
 
         // Функция для лайка/дизлайка отзыва
         window.toggleLike = async function(reviewId, isLiked) {
-            const userId = localStorage.getItem('userId') || 'anonymous'; // Простой способ идентификации пользователя
+            const userId = localStorage.getItem('userId') || 'anonymous';
             const reviewRef = doc(db, "reviews", reviewId);
             try {
                 const reviewDoc = await onSnapshot(doc(db, "reviews", reviewId), (doc) => {
@@ -273,16 +405,13 @@
                     let likedBy = review.likedBy || [];
 
                     if (isLiked) {
-                        // Убираем лайк
                         newLikes = Math.max(0, newLikes - 1);
                         likedBy = likedBy.filter(id => id !== userId);
                     } else {
-                        // Добавляем лайк
                         newLikes += 1;
                         likedBy.push(userId);
                     }
 
-                    // Обновляем документ в Firestore
                     updateDoc(reviewRef, {
                         likes: newLikes,
                         likedBy: likedBy
@@ -297,17 +426,16 @@
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchText = e.target.value.toLowerCase();
             const reviewItems = document.querySelectorAll('.review-item');
-            let visibleCount = 0; // Счетчик видимых отзывов после фильтрации
+            let visibleCount = 0;
 
             reviewItems.forEach(item => {
                 const username = item.querySelector('.username').textContent.toLowerCase();
                 const text = item.querySelector('p').textContent.toLowerCase();
                 const isVisible = username.includes(searchText) || text.includes(searchText);
                 item.style.display = isVisible ? 'block' : 'none';
-                if (isVisible) visibleCount++; // Увеличиваем счетчик видимых отзывов
+                if (isVisible) visibleCount++;
             });
 
-            // Обновляем текст с количеством отзывов после фильтрации
             reviewCount.textContent = `Всего отзывов: ${reviewItems.length} (показано: ${visibleCount})`;
         });
     </script>
