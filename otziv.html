@@ -125,6 +125,31 @@
             color: #555;
             text-align: center;
         }
+
+        .like-section {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .like-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #888;
+            transition: color 0.3s;
+        }
+
+        .like-button.liked {
+            color: #ff4d4d; /* Красный цвет для заполненного сердечка */
+        }
+
+        .like-count {
+            margin-left: 5px;
+            font-size: 14px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -157,7 +182,7 @@
     <!-- Подключение Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
         // Конфигурация Firebase
         const firebaseConfig = {
@@ -188,7 +213,9 @@
                 await addDoc(collection(db, "reviews"), {
                     username: username,
                     text: reviewText,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    likes: 0, // Изначально 0 лайков
+                    likedBy: [] // Массив для хранения пользователей, которые лайкнули
                 });
                 document.getElementById('username').value = '';
                 document.getElementById('reviewText').value = '';
@@ -207,12 +234,25 @@
 
             snapshot.forEach((doc) => {
                 const review = doc.data();
+                const reviewId = doc.id; // ID документа в Firestore
                 const reviewItem = document.createElement('div');
                 reviewItem.className = 'review-item';
+                reviewItem.setAttribute('data-id', reviewId); // Сохраняем ID отзыва
+
+                // Проверяем, лайкнул ли текущий пользователь (для примера используем localStorage)
+                const userId = localStorage.getItem('userId') || 'anonymous'; // Простой способ идентификации пользователя
+                const isLiked = review.likedBy && review.likedBy.includes(userId);
+
                 reviewItem.innerHTML = `
                     <div class="username">${review.username}</div>
                     <p>${review.text}</p>
                     <div class="timestamp">${new Date(review.timestamp).toLocaleString()}</div>
+                    <div class="like-section">
+                        <button class="like-button ${isLiked ? 'liked' : ''}" onclick="toggleLike('${reviewId}', ${isLiked})">
+                            ${isLiked ? '❤️' : '🤍'}
+                        </button>
+                        <span class="like-count">${review.likes || 0}</span>
+                    </div>
                 `;
                 reviewsList.appendChild(reviewItem);
                 count++; // Увеличиваем счетчик
@@ -221,6 +261,37 @@
             // Обновляем текст с количеством отзывов
             reviewCount.textContent = `Всего отзывов: ${count}`;
         });
+
+        // Функция для лайка/дизлайка отзыва
+        window.toggleLike = async function(reviewId, isLiked) {
+            const userId = localStorage.getItem('userId') || 'anonymous'; // Простой способ идентификации пользователя
+            const reviewRef = doc(db, "reviews", reviewId);
+            try {
+                const reviewDoc = await onSnapshot(doc(db, "reviews", reviewId), (doc) => {
+                    const review = doc.data();
+                    let newLikes = review.likes || 0;
+                    let likedBy = review.likedBy || [];
+
+                    if (isLiked) {
+                        // Убираем лайк
+                        newLikes = Math.max(0, newLikes - 1);
+                        likedBy = likedBy.filter(id => id !== userId);
+                    } else {
+                        // Добавляем лайк
+                        newLikes += 1;
+                        likedBy.push(userId);
+                    }
+
+                    // Обновляем документ в Firestore
+                    updateDoc(reviewRef, {
+                        likes: newLikes,
+                        likedBy: likedBy
+                    });
+                });
+            } catch (e) {
+                console.error("Ошибка при обновлении лайков: ", e);
+            }
+        };
 
         // Поиск отзывов
         document.getElementById('searchInput').addEventListener('input', function(e) {
