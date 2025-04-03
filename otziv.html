@@ -232,7 +232,7 @@
     <!-- Подключение Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
         // Конфигурация Firebase
         const firebaseConfig = {
@@ -249,6 +249,22 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // Функция для получения IP-адреса пользователя
+        let userIP = null;
+        async function getUserIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                userIP = data.ip;
+            } catch (e) {
+                console.error("Ошибка при получении IP-адреса: ", e);
+                userIP = 'unknown'; // Резервное значение, если не удалось получить IP
+            }
+        }
+
+        // Вызываем функцию получения IP при загрузке страницы
+        getUserIP();
+
         // Функция для добавления отзыва
         window.addReview = async function() {
             const username = document.getElementById('username').value;
@@ -259,6 +275,11 @@
                 return;
             }
 
+            if (!userIP) {
+                alert('Не удалось определить ваш IP-адрес. Пожалуйста, попробуйте снова.');
+                return;
+            }
+
             try {
                 await addDoc(collection(db, "reviews"), {
                     username: username,
@@ -266,8 +287,8 @@
                     timestamp: new Date().toISOString(),
                     likes: 0,
                     likedBy: [],
-                    replies: [], // Массив для хранения ответов
-                    isRepliesExpanded: false // Состояние сворачивания/разворачивания
+                    replies: [],
+                    isRepliesExpanded: false
                 });
                 document.getElementById('username').value = '';
                 document.getElementById('reviewText').value = '';
@@ -287,25 +308,38 @@
                 return;
             }
 
+            if (!userIP) {
+                alert('Не удалось определить ваш IP-адрес. Пожалуйста, попробуйте снова.');
+                return;
+            }
+
             const reviewRef = doc(db, "reviews", reviewId);
             try {
-                const reviewDoc = await onSnapshot(doc(db, "reviews", reviewId), (doc) => {
-                    const review = doc.data();
-                    const replies = review.replies || [];
-                    replies.push({
-                        username: replyUsername,
-                        text: replyText,
-                        timestamp: new Date().toISOString()
-                    });
+                // Получаем текущие данные отзыва
+                const reviewDoc = await getDoc(reviewRef);
+                if (!reviewDoc.exists()) {
+                    console.error("Отзыв не найден");
+                    return;
+                }
 
-                    updateDoc(reviewRef, {
-                        replies: replies,
-                        isRepliesExpanded: true // Разворачиваем ответы после добавления
-                    });
-
-                    document.getElementById(`reply-username-${reviewId}`).value = '';
-                    document.getElementById(`reply-text-${reviewId}`).value = '';
+                const review = reviewDoc.data();
+                const replies = review.replies || [];
+                replies.push({
+                    username: replyUsername,
+                    text: replyText,
+                    timestamp: new Date().toISOString(),
+                    ip: userIP // Сохраняем IP-адрес пользователя, оставившего ответ
                 });
+
+                // Обновляем документ в Firestore
+                await updateDoc(reviewRef, {
+                    replies: replies,
+                    isRepliesExpanded: true
+                });
+
+                document.getElementById(`reply-username-${reviewId}`).value = '';
+                document.getElementById(`reply-text-${reviewId}`).value = '';
+                alert('Ответ успешно добавлен!');
             } catch (e) {
                 console.error("Ошибка при добавлении ответа: ", e);
             }
@@ -323,12 +357,55 @@
             }
         };
 
+        // Функция для лайка/дизлайка отзыва
+        window.toggleLike = async function(reviewId) {
+            if (!userIP) {
+                alert('Не удалось определить ваш IP-адрес. Пожалуйста, попробуйте снова.');
+                return;
+            }
+
+            const reviewRef = doc(db, "reviews", reviewId);
+            try {
+                // Получаем текущие данные отзыва
+                const reviewDoc = await getDoc(reviewRef);
+                if (!reviewDoc.exists()) {
+                    console.error("Отзыв не найден");
+                    return;
+                }
+
+                const review = reviewDoc.data();
+                let newLikes = review.likes || 0;
+                let likedBy = review.likedBy || [];
+
+                // Проверяем, лайкнул ли уже пользователь с этим IP
+                const hasLiked = likedBy.includes(userIP);
+
+                if (hasLiked) {
+                    // Убираем лайк
+                    newLikes = Math.max(0, newLikes - 1);
+                    likedBy = likedBy.filter(ip => ip !== userIP);
+                } else {
+                    // Добавляем лайк
+                    newLikes += 1;
+                    likedBy.push(userIP);
+                }
+
+                // Обновляем документ в Firestore
+                await updateDoc(reviewRef, {
+                    likes: newLikes,
+                    likedBy: likedBy
+                });
+            } catch (e) {
+                console.error("Ошибка при обновлении лайков: ", e);
+            }
+        };
+
         // Функция для отображения отзывов в реальном времени
         const reviewsList = document.getElementById('reviewsList');
         const reviewCount = document.getElementById('reviewCount');
         onSnapshot(collection(db, "reviews"), (snapshot) => {
             reviewsList.innerHTML = '';
-            let count = 0; // Счетчик отзывов
+            let count = 0;
 
             snapshot.forEach((doc) => {
                 const review = doc.data();
@@ -337,9 +414,8 @@
                 reviewItem.className = 'review-item';
                 reviewItem.setAttribute('data-id', reviewId);
 
-                // Проверяем, лайкнул ли текущий пользователь
-                const userId = localStorage.getItem('userId') || 'anonymous';
-                const isLiked = review.likedBy && review.likedBy.includes(userId);
+                // Проверяем, лайкнул ли текущий пользователь (по IP)
+                const isLiked = userIP && review.likedBy && review.likedBy.includes(userIP);
 
                 // Проверяем состояние сворачивания/разворачивания
                 const isRepliesExpanded = review.isRepliesExpanded || false;
@@ -351,7 +427,7 @@
                     <p>${review.text}</p>
                     <div class="timestamp">${new Date(review.timestamp).toLocaleString()}</div>
                     <div class="like-section">
-                        <button class="like-button ${isLiked ? 'liked' : ''}" onclick="toggleLike('${reviewId}', ${isLiked})">
+                        <button class="like-button ${isLiked ? 'liked' : ''}" onclick="toggleLike('${reviewId}')">
                             ${isLiked ? '❤️' : '🤍'}
                         </button>
                         <span class="like-count">${review.likes || 0}</span>
@@ -384,43 +460,14 @@
                     reviewHTML += `</div>`;
                 }
 
-                reviewHTML += `</div>`; // Закрываем reply-section
+                reviewHTML += `</div>`;
                 reviewItem.innerHTML = reviewHTML;
                 reviewsList.appendChild(reviewItem);
                 count++;
             });
 
-            // Обновляем текст с количеством отзывов
             reviewCount.textContent = `Всего отзывов: ${count}`;
         });
-
-        // Функция для лайка/дизлайка отзыва
-        window.toggleLike = async function(reviewId, isLiked) {
-            const userId = localStorage.getItem('userId') || 'anonymous';
-            const reviewRef = doc(db, "reviews", reviewId);
-            try {
-                const reviewDoc = await onSnapshot(doc(db, "reviews", reviewId), (doc) => {
-                    const review = doc.data();
-                    let newLikes = review.likes || 0;
-                    let likedBy = review.likedBy || [];
-
-                    if (isLiked) {
-                        newLikes = Math.max(0, newLikes - 1);
-                        likedBy = likedBy.filter(id => id !== userId);
-                    } else {
-                        newLikes += 1;
-                        likedBy.push(userId);
-                    }
-
-                    updateDoc(reviewRef, {
-                        likes: newLikes,
-                        likedBy: likedBy
-                    });
-                });
-            } catch (e) {
-                console.error("Ошибка при обновлении лайков: ", e);
-            }
-        };
 
         // Поиск отзывов
         document.getElementById('searchInput').addEventListener('input', function(e) {
