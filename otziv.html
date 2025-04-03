@@ -202,7 +202,6 @@
             margin-top: 5px;
         }
 
-        /* Стили для невидимой кнопки и кнопок управления */
         .admin-button {
             position: fixed;
             top: 0;
@@ -248,7 +247,6 @@
 </head>
 
 <body>
-    <!-- Верхняя панель -->
     <div class="top-bar">
         <h1>Отзывы</h1>
         <div class="search-bar">
@@ -256,33 +254,24 @@
         </div>
     </div>
 
-    <!-- Невидимая кнопка для админа -->
     <button class="admin-button" onclick="promptAdminPassword()"></button>
 
-    <!-- Основной контент -->
     <div class="container">
-        <!-- Форма для добавления отзыва -->
         <div class="review-form">
             <h2>Оставьте свой отзыв</h2>
             <input type="text" id="username" placeholder="Ваше имя или никнейм">
             <textarea id="reviewText" placeholder="Ваш отзыв..."></textarea>
             <button onclick="addReview()">Отправить</button>
         </div>
-        <!-- Элемент для отображения количества отзывов -->
         <div class="review-count" id="reviewCount">Всего отзывов: 0</div>
 
-        <!-- Список отзывов -->
-        <div class="reviews-list" id="reviewsList">
-            <!-- Отзывы будут добавляться сюда через JavaScript -->
-        </div>
+        <div class="reviews-list" id="reviewsList"></div>
     </div>
 
-    <!-- Подключение Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-        // Конфигурация Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAxp9yWxNndxvbJ_OpogAkDWjdqpOWuGbg",
             authDomain: "sait-4c17b.firebaseapp.com",
@@ -293,16 +282,33 @@
             measurementId: "G-28M72NML99"
         };
 
-        // Инициализация Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Переменные для IP и статуса админа
         let userIP = null;
         let isAdmin = false;
-        const ADMIN_PASSWORD = "23284782374826473826"; // Установлен ваш пароль
+        let ADMIN_PASSWORD = null;
 
-        // Функция для получения IP-адреса пользователя
+        // Получение пароля из Firestore
+        async function loadAdminPassword() {
+            try {
+                const adminDocRef = doc(db, "adminConfig", "settings");
+                const adminDoc = await getDoc(adminDocRef);
+                if (adminDoc.exists()) {
+                    ADMIN_PASSWORD = adminDoc.data().adminPassword;
+                } else {
+                    console.error("Документ с паролем не найден!");
+                    alert("Ошибка: Пароль администратора не настроен.");
+                }
+            } catch (e) {
+                console.error("Ошибка при загрузке пароля: ", e);
+                alert("Не удалось загрузить пароль администратора. Проверьте консоль.");
+            }
+        }
+
+        // Загружаем пароль при старте
+        loadAdminPassword();
+
         async function getUserIP() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
@@ -314,12 +320,17 @@
             }
         }
 
-        // Вызываем функцию получения IP при загрузке страницы
         getUserIP();
 
-        // Проверка пароля для входа в режим админа
-        window.promptAdminPassword = function () {
+        window.promptAdminPassword = async function () {
+            if (ADMIN_PASSWORD === null) {
+                alert("Пароль администратора ещё не загружен. Попробуйте снова через несколько секунд.");
+                return;
+            }
+
             const password = prompt("Введите пароль администратора:");
+            if (!password) return;
+
             if (password === ADMIN_PASSWORD) {
                 isAdmin = true;
                 alert("Вы вошли как администратор!");
@@ -329,7 +340,6 @@
             }
         };
 
-        // Показать кнопки управления для админа
         function showAdminControls() {
             const blockButtons = document.querySelectorAll('.block-button');
             const unblockButtons = document.querySelectorAll('.unblock-button');
@@ -337,21 +347,18 @@
             unblockButtons.forEach(button => button.style.display = 'inline-block');
         }
 
-        // Проверка, заблокирован ли IP
         async function isIPBlocked(ip) {
             const blockRef = doc(db, "blockedIPs", ip);
             const blockDoc = await getDoc(blockRef);
             return blockDoc.exists();
         }
 
-        // Проверка, оставлял ли IP отзыв
         async function hasIPReviewed(ip) {
             const ipRef = doc(db, "reviewedIPs", ip);
             const ipDoc = await getDoc(ipRef);
             return ipDoc.exists();
         }
 
-        // Блокировка IP
         window.blockUser = async function (ip, reviewId) {
             if (!isAdmin) {
                 alert("Только администратор может блокировать пользователей!");
@@ -369,7 +376,6 @@
             }
         };
 
-        // Разблокировка IP
         window.unblockUser = async function (ip) {
             if (!isAdmin) {
                 alert("Только администратор может разблокировать пользователей!");
@@ -386,7 +392,6 @@
             }
         };
 
-        // Функция для добавления отзыва
         window.addReview = async function () {
             const username = document.getElementById('username').value;
             const reviewText = document.getElementById('reviewText').value;
@@ -423,7 +428,6 @@
                     ip: userIP
                 });
 
-                // Записываем IP как использованный для отзыва
                 await setDoc(doc(db, "reviewedIPs", userIP), {
                     reviewId: reviewDoc.id,
                     timestamp: new Date().toISOString()
@@ -437,7 +441,6 @@
             }
         };
 
-        // Функция для добавления ответа
         window.addReply = async function (reviewId) {
             const replyUsername = document.getElementById(`reply-username-${reviewId}`).value;
             const replyText = document.getElementById(`reply-text-${reviewId}`).value;
@@ -451,12 +454,6 @@
                 alert('Не удалось определить ваш IP-адрес. Пожалуйста, попробуйте снова.');
                 return;
             }
-
-            // Убрана проверка на блокировку IP для ответов, чтобы человек мог писать ответы даже если заблокирован
-            // if (await isIPBlocked(userIP)) {
-            //     alert('Ваш IP заблокирован, вы не можете оставлять ответы!');
-            //     return;
-            // }
 
             const reviewRef = doc(db, "reviews", reviewId);
             try {
@@ -488,7 +485,6 @@
             }
         };
 
-        // Функция для сворачивания/разворачивания ответов
         window.toggleReplies = async function (reviewId, isExpanded) {
             const reviewRef = doc(db, "reviews", reviewId);
             try {
@@ -500,7 +496,6 @@
             }
         };
 
-        // Функция для лайка/дизлайка отзыва
         window.toggleLike = async function (reviewId) {
             if (!userIP) {
                 alert('Не удалось определить ваш IP-адрес. Пожалуйста, попробуйте снова.');
@@ -524,9 +519,11 @@
                 if (hasLiked) {
                     newLikes = Math.max(0, newLikes - 1);
                     likedBy = likedBy.filter(ip => ip !== userIP);
+                    alert('Вы убрали свой лайк.');
                 } else {
                     newLikes += 1;
                     likedBy.push(userIP);
+                    alert('Лайк добавлен! Вы больше не можете лайкать этот отзыв с этого IP.');
                 }
 
                 await updateDoc(reviewRef, {
@@ -538,7 +535,6 @@
             }
         };
 
-        // Функция для отображения отзывов в реальном времени
         const reviewsList = document.getElementById('reviewsList');
         const reviewCount = document.getElementById('reviewCount');
         onSnapshot(collection(db, "reviews"), (snapshot) => {
@@ -605,7 +601,6 @@
             if (isAdmin) showAdminControls();
         });
 
-        // Поиск отзывов
         document.getElementById('searchInput').addEventListener('input', function (e) {
             const searchText = e.target.value.toLowerCase();
             const reviewItems = document.querySelectorAll('.review-item');
