@@ -116,7 +116,7 @@
         .reply-form button {
             background-color: #00bfff;
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 1rem; /* Исправлено: убрано "W" */
             border: none;
             border-radius: 1.25rem;
             cursor: pointer;
@@ -360,7 +360,7 @@
             <input type="text" placeholder="Поиск отзывов..." id="searchInput">
         </div>
         <div class="user-section" id="userSection">
-            <button id="loginButton" onclick="signInWithGoogle()">Войти</button>
+            <button id="loginButton" onclick="signInWithGoogle()">Войти через Google</button>
         </div>
     </div>
 
@@ -461,11 +461,11 @@
                 } else {
                     const result = await signInWithPopup(auth, provider);
                     currentUser = result.user;
-                    alert("Вы вошли через Google!");
+                    alert(`Добро пожаловать, ${currentUser.displayName}!`);
                 }
             } catch (e) {
                 console.error("Ошибка авторизации: ", e);
-                alert("Ошибка авторизации. Попробуйте снова.");
+                alert("Ошибка авторизации: " + e.message);
             }
         };
 
@@ -484,7 +484,7 @@
                 });
             } else {
                 userSection.innerHTML = `
-                    <button id="loginButton" onclick="signInWithGoogle()">Войти</button>
+                    <button id="loginButton" onclick="signInWithGoogle()">Войти через Google</button>
                 `;
                 document.getElementById('username').style.display = 'block';
                 document.querySelectorAll('input[id^="reply-username-"]').forEach(input => {
@@ -804,7 +804,7 @@
                 reviewItem.setAttribute('data-id', reviewId);
 
                 let html = `
-                    <img class="avatar" src="${review.photoURL}" alt="User Avatar">
+                    <img class="avatar" src="${review.photoURL || 'https://via.placeholder.com/32'}" alt="User Avatar">
                     <div class="content">
                         <div class="username">${review.username}</div>
                         <p>${review.text}</p>
@@ -836,7 +836,7 @@
                         const isReplyLiked = userIP && reply.likedBy?.includes(userIP);
                         html += `
                             <div class="reply-item">
-                                <img class="avatar" src="${reply.photoURL}" alt="User Avatar">
+                                <img class="avatar" src="${reply.photoURL || 'https://via.placeholder.com/32'}" alt="User Avatar">
                                 <div class="content">
                                     <div class="username">${reply.username}</div>
                                     <p>${reply.text}</p>
