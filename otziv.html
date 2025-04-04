@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,6 +53,26 @@
             font-size: 1rem;
         }
 
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-section img {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+        }
+
+        .user-section button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
         .container {
             margin-top: 5rem;
             padding: 1.25rem;
@@ -97,7 +116,7 @@
         .reply-form button {
             background-color: #00bfff;
             color: white;
-            padding: 0.5rem 1rem W;
+            padding: 0.5rem 1rem;
             border: none;
             border-radius: 1.25rem;
             cursor: pointer;
@@ -120,10 +139,22 @@
         .review-item {
             border-bottom: 1px solid #ddd;
             padding: 0.9375rem 0;
+            display: flex;
+            gap: 1rem;
         }
 
         .review-item:last-child {
             border-bottom: none;
+        }
+
+        .review-item .avatar {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+        }
+
+        .review-item .content {
+            flex: 1;
         }
 
         .review-item .username {
@@ -198,6 +229,18 @@
         .reply-item {
             padding: 0.3125rem 0;
             border-top: 1px solid #eee;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .reply-item .avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+        }
+
+        .reply-item .content {
+            flex: 1;
         }
 
         .reply-item .username {
@@ -316,12 +359,15 @@
         <div class="search-bar">
             <input type="text" placeholder="Поиск отзывов..." id="searchInput">
         </div>
+        <div class="user-section" id="userSection">
+            <button id="loginButton" onclick="signInWithGoogle()">Войти</button>
+        </div>
     </div>
 
     <button class="admin-button" onclick="promptAdminPassword()"></button>
 
     <div class="container">
-        <div class="review-form">
+        <div class="review-form" id="reviewForm">
             <h2>Оставьте свой отзыв</h2>
             <input type="text" id="username" placeholder="Ваше имя или никнейм">
             <textarea id="reviewText" placeholder="Ваш отзыв..."></textarea>
@@ -335,6 +381,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAxp9yWxNndxvbJ_OpogAkDWjdqpOWuGbg",
@@ -348,10 +395,13 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
         let userIP = null;
         let isAdmin = false;
         let ADMIN_PASSWORD = null;
+        let currentUser = null;
 
         const forbiddenWords = [
             "создатель", "Sozdatrl", "sozdatrl", "Admin", "admin", "Админ", "админ", "админус",
@@ -392,6 +442,57 @@
             "создaтeл✮", "создaтeл✯", "создaтeл✰", "создaтeл✱", "создaтeл✲", "создaтeл✳", "создaтeл✴"
         ];
 
+        async function getUserIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                userIP = data.ip;
+            } catch (e) {
+                console.error("Ошибка при получении IP: ", e);
+                userIP = 'unknown';
+            }
+        }
+
+        window.signInWithGoogle = async function () {
+            try {
+                if (currentUser) {
+                    await signOut(auth);
+                    alert("Вы вышли из аккаунта!");
+                } else {
+                    const result = await signInWithPopup(auth, provider);
+                    currentUser = result.user;
+                    alert("Вы вошли через Google!");
+                }
+            } catch (e) {
+                console.error("Ошибка авторизации: ", e);
+                alert("Ошибка авторизации. Попробуйте снова.");
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const userSection = document.getElementById('userSection');
+            if (user) {
+                userSection.innerHTML = `
+                    <img src="${user.photoURL || 'https://via.placeholder.com/32'}" alt="User Avatar">
+                    <span>${user.displayName}</span>
+                    <button id="loginButton" onclick="signInWithGoogle()">Выйти</button>
+                `;
+                document.getElementById('username').style.display = 'none';
+                document.querySelectorAll('input[id^="reply-username-"]').forEach(input => {
+                    input.style.display = 'none';
+                });
+            } else {
+                userSection.innerHTML = `
+                    <button id="loginButton" onclick="signInWithGoogle()">Войти</button>
+                `;
+                document.getElementById('username').style.display = 'block';
+                document.querySelectorAll('input[id^="reply-username-"]').forEach(input => {
+                    input.style.display = 'block';
+                });
+            }
+        });
+
         async function loadAdminPassword() {
             try {
                 const adminDocRef = doc(db, "adminConfig", "settings");
@@ -404,17 +505,6 @@
                 }
             } catch (e) {
                 console.error("Ошибка при загрузке пароля: ", e);
-            }
-        }
-
-        async function getUserIP() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                userIP = data.ip;
-            } catch (e) {
-                console.error("Ошибка при получении IP: ", e);
-                userIP = 'unknown';
             }
         }
 
@@ -491,7 +581,7 @@
         };
 
         window.addReview = async function () {
-            let username = document.getElementById('username').value.trim();
+            let username = currentUser ? currentUser.displayName : document.getElementById('username').value.trim();
             const reviewText = document.getElementById('reviewText').value.trim();
 
             if (!reviewText) {
@@ -506,7 +596,7 @@
 
             if (isAdmin) {
                 username = "Создатель";
-            } else {
+            } else if (!currentUser) {
                 if (!username) {
                     alert('Заполните поле имени!');
                     return;
@@ -516,19 +606,23 @@
                     document.getElementById('username').value = '';
                     return;
                 }
-                if (await isIPBlocked(userIP)) {
-                    alert('Ваш IP заблокирован!');
-                    return;
-                }
-                if (await hasIPReviewed(userIP)) {
-                    alert('Вы уже оставили отзыв!');
-                    return;
-                }
+            }
+
+            if (await isIPBlocked(userIP)) {
+                alert('Ваш IP заблокирован!');
+                return;
+            }
+
+            if (await hasIPReviewed(userIP)) {
+                alert('Вы уже оставили отзыв!');
+                return;
             }
 
             try {
                 const reviewDoc = await addDoc(collection(db, "reviews"), {
                     username,
+                    userId: currentUser ? currentUser.uid : null,
+                    photoURL: currentUser ? (currentUser.photoURL || 'https://via.placeholder.com/32') : 'https://via.placeholder.com/32',
                     text: reviewText,
                     timestamp: new Date().toISOString(),
                     likes: 0,
@@ -554,7 +648,7 @@
         };
 
         window.addReply = async function (reviewId) {
-            let replyUsername = document.getElementById(`reply-username-${reviewId}`).value.trim();
+            let replyUsername = currentUser ? currentUser.displayName : document.getElementById(`reply-username-${reviewId}`).value.trim();
             const replyText = document.getElementById(`reply-text-${reviewId}`).value.trim();
 
             if (!replyText) {
@@ -569,7 +663,7 @@
 
             if (isAdmin) {
                 replyUsername = "Создатель";
-            } else {
+            } else if (!currentUser) {
                 if (!replyUsername) {
                     alert('Заполните поле имени!');
                     return;
@@ -579,10 +673,11 @@
                     document.getElementById(`reply-username-${reviewId}`).value = '';
                     return;
                 }
-                if (await isIPBlocked(userIP)) {
-                    alert('Ваш IP заблокирован!');
-                    return;
-                }
+            }
+
+            if (await isIPBlocked(userIP)) {
+                alert('Ваш IP заблокирован!');
+                return;
             }
 
             const reviewRef = doc(db, "reviews", reviewId);
@@ -594,6 +689,8 @@
                 const replies = review.replies || [];
                 replies.push({
                     username: replyUsername,
+                    userId: currentUser ? currentUser.uid : null,
+                    photoURL: currentUser ? (currentUser.photoURL || 'https://via.placeholder.com/32') : 'https://via.placeholder.com/32',
                     text: replyText,
                     timestamp: new Date().toISOString(),
                     ip: userIP,
@@ -707,23 +804,25 @@
                 reviewItem.setAttribute('data-id', reviewId);
 
                 let html = `
-                    <div class="username">${review.username}</div>
-                    <p>${review.text}</p>
-                    <div class="timestamp">${new Date(review.timestamp).toLocaleString()}</div>
-                    <div class="like-section">
-                        <button class="like-button ${isLiked ? 'liked' : ''}" onclick="toggleLike('${reviewId}')">
-                            ${isLiked ? '❤️' : '🤍'}
-                        </button>
-                        <span class="like-count">${review.likes || 0}</span>
-                    </div>
-                    <button class="block-button" onclick="blockUser('${review.ip}', '${reviewId}')">Заблокировать IP</button>
-                    <button class="unblock-button" onclick="unblockUser('${review.ip}')">Разблокировать IP</button>
-                    <div class="reply-section">
-                        <div class="reply-form">
-                            <input type="text" id="reply-username-${reviewId}" placeholder="Ваше имя">
-                            <textarea id="reply-text-${reviewId}" placeholder="Ваш ответ..."></textarea>
-                            <button onclick="addReply('${reviewId}')">Ответить</button>
+                    <img class="avatar" src="${review.photoURL}" alt="User Avatar">
+                    <div class="content">
+                        <div class="username">${review.username}</div>
+                        <p>${review.text}</p>
+                        <div class="timestamp">${new Date(review.timestamp).toLocaleString()}</div>
+                        <div class="like-section">
+                            <button class="like-button ${isLiked ? 'liked' : ''}" onclick="toggleLike('${reviewId}')">
+                                ${isLiked ? '❤️' : '🤍'}
+                            </button>
+                            <span class="like-count">${review.likes || 0}</span>
                         </div>
+                        <button class="block-button" onclick="blockUser('${review.ip}', '${reviewId}')">Заблокировать IP</button>
+                        <button class="unblock-button" onclick="unblockUser('${review.ip}')">Разблокировать IP</button>
+                        <div class="reply-section">
+                            <div class="reply-form">
+                                <input type="text" id="reply-username-${reviewId}" placeholder="Ваше имя">
+                                <textarea id="reply-text-${reviewId}" placeholder="Ваш ответ..."></textarea>
+                                <button onclick="addReply('${reviewId}')">Ответить</button>
+                            </div>
                 `;
 
                 if (replies.length > 0) {
@@ -737,14 +836,17 @@
                         const isReplyLiked = userIP && reply.likedBy?.includes(userIP);
                         html += `
                             <div class="reply-item">
-                                <div class="username">${reply.username}</div>
-                                <p>${reply.text}</p>
-                                <div class="timestamp">${new Date(reply.timestamp).toLocaleString()}</div>
-                                <div class="reply-like-section">
-                                    <button class="reply-like-button ${isReplyLiked ? 'liked' : ''}" onclick="toggleReplyLike('${reviewId}', ${index})">
-                                        ${isReplyLiked ? '❤️' : '🤍'}
-                                    </button>
-                                    <span class="reply-like-count">${reply.likes || 0}</span>
+                                <img class="avatar" src="${reply.photoURL}" alt="User Avatar">
+                                <div class="content">
+                                    <div class="username">${reply.username}</div>
+                                    <p>${reply.text}</p>
+                                    <div class="timestamp">${new Date(reply.timestamp).toLocaleString()}</div>
+                                    <div class="reply-like-section">
+                                        <button class="reply-like-button ${isReplyLiked ? 'liked' : ''}" onclick="toggleReplyLike('${reviewId}', ${index})">
+                                            ${isReplyLiked ? '❤️' : '🤍'}
+                                        </button>
+                                        <span class="reply-like-count">${reply.likes || 0}</span>
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -752,7 +854,7 @@
                     html += `</div>`;
                 }
 
-                html += `</div>`;
+                html += `</div></div>`;
                 reviewItem.innerHTML = html;
                 reviewsList.appendChild(reviewItem);
                 count++;
@@ -785,5 +887,4 @@
         });
     </script>
 </body>
-
 </html>
