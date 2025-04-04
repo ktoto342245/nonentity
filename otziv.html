@@ -7,84 +7,102 @@
     <title>Отзывы</title>
     <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/128/7804/7804629.png">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
             background: #f5f5f5;
             color: #333;
             margin: 0;
             padding: 0;
+            font-size: 16px;
+            line-height: 1.5;
         }
 
         .top-bar {
             background: linear-gradient(135deg, #6a11cb, #2575fc);
             color: white;
-            padding: 10px 20px;
+            padding: 1rem;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             position: fixed;
             top: 0;
             width: 100%;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.2);
             z-index: 1000;
         }
 
         .top-bar h1 {
-            font-size: 24px;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
             margin: 0;
         }
 
+        .search-bar {
+            width: 100%;
+            max-width: 18.75rem;
+        }
+
         .search-bar input {
-            padding: 8px;
-            border-radius: 20px;
+            padding: 0.5rem;
+            border-radius: 1.25rem;
             border: none;
-            width: 300px;
+            width: 100%;
+            font-size: 1rem;
         }
 
         .container {
-            margin-top: 80px;
-            padding: 20px;
-            max-width: 1200px;
+            margin-top: 5rem;
+            padding: 1.25rem;
+            width: 90%;
+            max-width: 75rem;
             margin-left: auto;
             margin-right: auto;
         }
 
         .review-form {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            padding: 1.25rem;
+            border-radius: 0.625rem;
+            box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.25rem;
         }
 
         .review-form input[type="text"],
         .reply-form input[type="text"] {
             width: 100%;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 0.625rem;
+            border-radius: 0.3125rem;
             border: 1px solid #ddd;
-            margin-bottom: 10px;
+            margin-bottom: 0.625rem;
+            font-size: 1rem;
         }
 
         .review-form textarea,
         .reply-form textarea {
             width: 100%;
-            height: 60px;
-            padding: 10px;
-            border-radius: 5px;
+            height: clamp(3.75rem, 15vh, 6rem);
+            padding: 0.625rem;
+            border-radius: 0.3125rem;
             border: 1px solid #ddd;
-            margin-bottom: 10px;
+            margin-bottom: 0.625rem;
+            font-size: 1rem;
+            resize: vertical;
         }
 
         .review-form button,
         .reply-form button {
             background-color: #00bfff;
             color: white;
-            padding: 8px 16px;
+            padding: 0.5rem 1rem W;
             border: none;
-            border-radius: 20px;
+            border-radius: 1.25rem;
             cursor: pointer;
             transition: background-color 0.3s;
+            font-size: 1rem;
         }
 
         .review-form button:hover,
@@ -94,14 +112,14 @@
 
         .reviews-list {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.25rem;
+            border-radius: 0.625rem;
+            box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
         }
 
         .review-item {
             border-bottom: 1px solid #ddd;
-            padding: 15px 0;
+            padding: 0.9375rem 0;
         }
 
         .review-item:last-child {
@@ -111,22 +129,23 @@
         .review-item .username {
             font-weight: bold;
             color: #2575fc;
-            margin-bottom: 5px;
+            margin-bottom: 0.3125rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
         }
 
         .review-item p {
-            margin: 5px 0;
-            font-size: 16px;
+            margin: 0.3125rem 0;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
 
         .review-item .timestamp {
             color: #888;
-            font-size: 12px;
+            font-size: clamp(0.7rem, 2vw, 0.75rem);
         }
 
         .review-count {
-            margin-top: 15px;
-            font-size: 16px;
+            margin-top: 0.9375rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
             color: #555;
             text-align: center;
         }
@@ -135,7 +154,7 @@
         .reply-like-section {
             display: flex;
             align-items: center;
-            margin-top: 10px;
+            margin-top: 0.625rem;
         }
 
         .like-button,
@@ -143,7 +162,7 @@
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 1.25rem;
             color: #888;
             transition: color 0.3s;
         }
@@ -155,46 +174,46 @@
 
         .like-count,
         .reply-like-count {
-            margin-left: 5px;
-            font-size: 14px;
+            margin-left: 0.3125rem;
+            font-size: clamp(0.8rem, 2vw, 0.875rem);
             color: #555;
         }
 
         .reply-section {
-            margin-top: 10px;
+            margin-top: 0.625rem;
         }
 
         .reply-form {
-            margin-top: 10px;
-            padding: 10px;
+            margin-top: 0.625rem;
+            padding: 0.625rem;
             background: #f9f9f9;
-            border-radius: 5px;
+            border-radius: 0.3125rem;
         }
 
         .replies-list {
-            margin-top: 10px;
-            padding-left: 20px;
+            margin-top: 0.625rem;
+            padding-left: 1.25rem;
         }
 
         .reply-item {
-            padding: 5px 0;
+            padding: 0.3125rem 0;
             border-top: 1px solid #eee;
         }
 
         .reply-item .username {
             font-weight: bold;
             color: #555;
-            font-size: 14px;
+            font-size: clamp(0.8rem, 2vw, 0.875rem);
         }
 
         .reply-item p {
-            margin: 2px 0;
-            font-size: 14px;
+            margin: 0.125rem 0;
+            font-size: clamp(0.8rem, 2vw, 0.875rem);
         }
 
         .reply-item .timestamp {
             color: #888;
-            font-size: 12px;
+            font-size: clamp(0.7rem, 1.5vw, 0.75rem);
         }
 
         .toggle-replies {
@@ -202,8 +221,8 @@
             border: none;
             color: #2575fc;
             cursor: pointer;
-            font-size: 14px;
-            margin-top: 5px;
+            font-size: clamp(0.8rem, 2vw, 0.875rem);
+            margin-top: 0.3125rem;
         }
 
         .admin-button {
@@ -211,22 +230,27 @@
             top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 30px;
-            height: 30px;
+            width: 1.875rem;
+            height: 1.875rem;
             opacity: 0;
             cursor: pointer;
             z-index: 1001;
         }
 
+        .block-button,
+        .unblock-button {
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: 0.625rem;
+            cursor: pointer;
+            margin-top: 0.3125rem;
+            display: none;
+            font-size: clamp(0.7rem, 2vw, 0.875rem);
+        }
+
         .block-button {
             background-color: #ff4444;
-            color: white;
-            padding: 4px 8px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 5px;
-            display: none;
         }
 
         .block-button:hover {
@@ -235,17 +259,53 @@
 
         .unblock-button {
             background-color: #4CAF50;
-            color: white;
-            padding: 4px 8px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 5px;
-            display: none;
         }
 
         .unblock-button:hover {
             background-color: #45a049;
+        }
+
+        @media (max-width: 768px) {
+            .top-bar {
+                flex-direction: column;
+                padding: 0.75rem;
+            }
+
+            .search-bar {
+                margin-top: 0.5rem;
+                max-width: 100%;
+            }
+
+            .container {
+                padding: 0.75rem;
+                width: 95%;
+            }
+
+            .review-form,
+            .reviews-list {
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+
+            .top-bar h1 {
+                font-size: clamp(1rem, 5vw, 1.2rem);
+            }
+
+            .review-form button,
+            .reply-form button {
+                width: 100%;
+                padding: 0.625rem;
+            }
+
+            .like-button,
+            .reply-like-button {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -293,7 +353,6 @@
         let isAdmin = false;
         let ADMIN_PASSWORD = null;
 
-        // Список запрещённых слов (добавляйте новые слова сюда)
         const forbiddenWords = [
             "создатель", "Sozdatrl", "sozdatrl", "Admin", "admin", "Админ", "админ", "админус",
             "создательс", "пидорасик", "пидорас", "Пидорас", "Пидорасик", "Пидор", "Сука", "Артем + Вова", "🏆",
@@ -312,24 +371,24 @@
             "сoздaтeлξ", "создaтeлο", "создaтeлρ", "создaтeлς", "сoздaтeлт", "создaтeлn", "создaтeлm", "создaтeлk", "сoздaтeлj", "создaтeлh", "создaтeлg",
             "создaтeлf", "сoздaтeлd", "создaтeлs", "создaтeлa", "создaтeлp", "создaтeлo", "сoздaтeлu", "создaтeлy", "создaтeлt", "создaтeлr", "сoздaтeлe",
             "создaтeлw", "создaтeлq", "создaтeлx", "создaтeлc", "сoздaтeлv", "создaтeлz", "создaтeл1", "создaтeл2", "сoздaтeл3", "создaтeл5", "создaтeл6",
-            "создaтeл7", "сoздaтeл8", "создaтeл9", "создaтeл0", "сoзд∆тeл", "сoздaтeл☆", "создaтeл★", "создaтeл✪", "сoздaтeл✿", "создaтeл❀", "создaтeл❁", 
-            "создaтeл♪", "сoздaтeл♫", "создaтeл♬", "создaтeл♭", "создaтeл♮", "сoздaтeл♯", "создaтeл✈", "создaтeл☀", "создaтeл☁", "сoздaтeл☂", "создaтeл☃", 
-            "создaтeл☄", "создaтeл★", "сoздaтeл☆", "создaтeл✰", "создaтeл✯", "создaтeл✮", "сoздaтeл✬", "создaтeл✫", "создaтeл✩", "создaтeл✧", "сoздaтeл✦", 
-            "создaтeл✥", "создaтeл✤", "создaтeл✣", "сoздaтeл✢", "создaтeл✡", "создaтeл✠", "создaтeл✟", "сoздaтeл✞", "создaтeл✝", "создaтeл☮", "создaтeл☯", 
-            "сoздaтeл☸", "создaтeл☹", "создaтeл☺", "создaтeл☻", "сoздaтeл☼", "создaтeл♠", "создaтeл♣", "создaтeл♥", "сoздaтeл♦", "создaтeл♤", "создaтeл♧", 
-            "создaтeл♡", "сoздaтeл♢", "создaтeл⚀", "создaтeл⚁", "создaтeл⚂", "сoздaтeл⚃", "создaтeл⚄", "создaтeл⚅", "создaтeл⚛", "создaтeл⚜", "сoздaтeл⚝", 
-            "создaтeл⚠", "создaтeл⚡", "создaтeл⚪", "сoздaтeл⚫", "создaтeл⚬", "создaтeл⚭", "создaтeл⚮", "сoздaтeл⚯", "создaтeл⚰", "создaтeл⚱", "создaтeл⚲", 
-            "сoздaтeл⚳", "создaтeл⚴", "создaтeл⚵", "создaтeл⚶", "сoздaтeл⚷", "создaтeл⚸", "создaтeл⚹", "создaтeл⚺", "создaтeл⚻", "создaтeл⚼", "создaтeл⚽", 
-            "создaтeл⚾", "создaтeл⚿", "создaтeл⛀", "создaтeл⛁", "создaтeл⛂", "создaтeл⛃", "создaтeл⛄", "создaтeл⛅", "создaтeл⛆", "создaтeл⛇", "создaтeл⛈", 
+            "создaтeл7", "сoздaтeл8", "создaтeл9", "создaтeл0", "сoзд∆тeл", "сoздaтeл☆", "создaтeл★", "создaтeл✪", "сoздaтeл✿", "создaтeл❀", "создaтeл❁",
+            "создaтeл♪", "сoздaтeл♫", "создaтeл♬", "создaтeл♭", "создaтeл♮", "сoздaтeл♯", "создaтeл✈", "создaтeл☀", "создaтeл☁", "сoздaтeл☂", "создaтeл☃",
+            "создaтeл☄", "создaтeл★", "сoздaтeл☆", "создaтeл✰", "создaтeл✯", "создaтeл✮", "сoздaтeл✬", "создaтeл✫", "создaтeл✩", "создaтeл✧", "сoздaтeл✦",
+            "создaтeл✥", "создaтeл✤", "создaтeл✣", "сoздaтeл✢", "создaтeл✡", "создaтeл✠", "создaтeл✟", "сoздaтeл✞", "создaтeл✝", "создaтeл☮", "создaтeл☯",
+            "сoздaтeл☸", "создaтeл☹", "создaтeл☺", "создaтeл☻", "сoздaтeл☼", "создaтeл♠", "создaтeл♣", "создaтeл♥", "сoздaтeл♦", "создaтeл♤", "создaтeл♧",
+            "создaтeл♡", "сoздaтeл♢", "создaтeл⚀", "создaтeл⚁", "создaтeл⚂", "сoздaтeл⚃", "создaтeл⚄", "создaтeл⚅", "создaтeл⚛", "создaтeл⚜", "сoздaтeл⚝",
+            "создaтeл⚠", "создaтeл⚡", "создaтeл⚪", "сoздaтeл⚫", "создaтeл⚬", "создaтeл⚭", "создaтeл⚮", "сoздaтeл⚯", "создaтeл⚰", "создaтeл⚱", "создaтeл⚲",
+            "сoздaтeл⚳", "создaтeл⚴", "создaтeл⚵", "создaтeл⚶", "сoздaтeл⚷", "создaтeл⚸", "создaтeл⚹", "создaтeл⚺", "создaтeл⚻", "создaтeл⚼", "создaтeл⚽",
+            "создaтeл⚾", "создaтeл⚿", "создaтeл⛀", "создaтeл⛁", "создaтeл⛂", "создaтeл⛃", "создaтeл⛄", "создaтeл⛅", "создaтeл⛆", "создaтeл⛇", "создaтeл⛈",
             "создaтeл⛉", "создaтeл⛊", "создaтeл⛋", "создaтeл⛌", "создaтeл⛍", "создaтeл⛎", "создaтeл⛏", "создaтeл⛐", "создaтeл⛑", "создaтeл⛒", "создaтeл⛓",
-            "создaтeл⛔", "создaтeл⛕", "создaтeл⛖", "создaтeл⛗", "создaтeл⛘", "создaтeл⛙", "создaтeл⛚", "создaтeл⛛", "создaтeл⛜", "создaтeл⛝", "создaтeл⛞", 
-            "создaтeл⛟", "создaтeл⛠", "создaтeл⛡", "создaтeл⛢", "создaтeл⛣", "создaтeл⛤", "создaтeл⛥", "создaтeл⛦", "создaтeл⛧", "создaтeл⛨", "создaтeл⛩", 
-            "создaтeл⛪", "создaтeл⛫", "создaтeл⛬", "создaтeл⛭", "создaтeл⛮", "создaтeл⛯", "создaтeл⛰", "создaтeл⛱", "создaтeл⛲", "создaтeл⛳", "создaтeл⛴", 
-            "создaтeл⛵", "создaтeл⛶", "создaтeл⛷", "создaтeл⛸", "создaтeл⛹", "создaтeл⛺", "создaтeл⛻", "создaтeл⛼", "создaтeл⛽", "создaтeл⛾", "создaтeл⛿", 
-            "создaтeл✀", "создaтeл✁", "создaтeл✂", "создaтeл✃", "создaтeл✄", "создaтeл✅", "создaтeл✆", "создaтeл✇", "создaтeл✈", "создaтeл✉", "создaтeл✊", 
-            "создaтeл✋", "создaтeл✌", "создaтeл✍", "создaтeл✎", "создaтeл✏", "создaтeл✐", "создaтeл✑", "создaтeл✒", "создaтeл✓", "создaтeл✔", "создaтeл✕", 
-            "создaтeл✖", "создaтeл✗", "создaтeл✘", "создaтeл✙", "создaтeл✚", "создaтeл✛", "создaтeл✜", "создaтeл✝", "создaтeл✞", "создaтeл✟", "создaтeл✠", "создaтeл✡", 
-            "создaтeл✢", "создaтeл✣", "создaтeл✤", "создaтeл✥", "создaтeл✦", "создaтeл✧", "создaтeл✨", "создaтeл✩", "создaтeл✪", "создaтeл✫", "создaтeл✬", "создaтeл✭", 
+            "создaтeл⛔", "создaтeл⛕", "создaтeл⛖", "создaтeл⛗", "создaтeл⛘", "создaтeл⛙", "создaтeл⛚", "создaтeл⛛", "создaтeл⛜", "создaтeл⛝", "создaтeл⛞",
+            "создaтeл⛟", "создaтeл⛠", "создaтeл⛡", "создaтeл⛢", "создaтeл⛣", "создaтeл⛤", "создaтeл⛥", "создaтeл⛦", "создaтeл⛧", "создaтeл⛨", "создaтeл⛩",
+            "создaтeл⛪", "создaтeл⛫", "создaтeл⛬", "создaтeл⛭", "создaтeл⛮", "создaтeл⛯", "создaтeл⛰", "создaтeл⛱", "создaтeл⛲", "создaтeл⛳", "создaтeл⛴",
+            "создaтeл⛵", "создaтeл⛶", "создaтeл⛷", "создaтeл⛸", "создaтeл⛹", "создaтeл⛺", "создaтeл⛻", "создaтeл⛼", "создaтeл⛽", "создaтeл⛾", "создaтeл⛿",
+            "создaтeл✀", "создaтeл✁", "создaтeл✂", "создaтeл✃", "создaтeл✄", "создaтeл✅", "создaтeл✆", "создaтeл✇", "создaтeл✈", "создaтeл✉", "создaтeл✊",
+            "создaтeл✋", "создaтeл✌", "создaтeл✍", "создaтeл✎", "создaтeл✏", "создaтeл✐", "создaтeл✑", "создaтeл✒", "создaтeл✓", "создaтeл✔", "создaтeл✕",
+            "создaтeл✖", "создaтeл✗", "создaтeл✘", "создaтeл✙", "создaтeл✚", "создaтeл✛", "создaтeл✜", "создaтeл✝", "создaтeл✞", "создaтeл✟", "создaтeл✠", "создaтeл✡",
+            "создaтeл✢", "создaтeл✣", "создaтeл✤", "создaтeл✥", "создaтeл✦", "создaтeл✧", "создaтeл✨", "создaтeл✩", "создaтeл✪", "создaтeл✫", "создaтeл✬", "создaтeл✭",
             "создaтeл✮", "создaтeл✯", "создaтeл✰", "создaтeл✱", "создaтeл✲", "создaтeл✳", "создaтeл✴"
         ];
 
@@ -452,7 +511,6 @@
                     alert('Заполните поле имени!');
                     return;
                 }
-                // Проверка на запрещённые слова
                 if (forbiddenWords.some(word => username.toLowerCase().includes(word.toLowerCase()))) {
                     alert(`Никнейм "${username}" содержит запрещённое слово! Выберите другой.`);
                     document.getElementById('username').value = '';
@@ -516,7 +574,6 @@
                     alert('Заполните поле имени!');
                     return;
                 }
-                // Проверка на запрещённые слова
                 if (forbiddenWords.some(word => replyUsername.toLowerCase().includes(word.toLowerCase()))) {
                     alert(`Никнейм "${replyUsername}" содержит запрещённое слово! Выберите другой.`);
                     document.getElementById(`reply-username-${reviewId}`).value = '';
@@ -706,6 +763,9 @@
                 showAdminControls();
                 hideUsernameInputs();
             }
+        }, (error) => {
+            console.error("Ошибка при получении данных с сервера: ", error);
+            reviewsList.innerHTML = '<p>Ошибка загрузки отзывов. Проверьте подключение или настройки Firebase.</p>';
         });
 
         document.getElementById('searchInput').addEventListener('input', function (e) {
