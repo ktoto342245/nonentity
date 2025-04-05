@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!DOCTYPE html><html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,348 +9,304 @@
         * {
             box-sizing: border-box;
         }
+    body {
+        font-family: 'Arial', sans-serif;
+        background: #f5f5f5;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        font-size: 16px;
+        line-height: 1.5;
+    }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            font-size: 16px;
-            line-height: 1.5;
-        }
+    .top-bar {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        color: white;
+        padding: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
 
+    .top-bar h1 {
+        font-size: clamp(1.2rem, 4vw, 1.5rem);
+        margin: 0;
+    }
+
+    .search-bar {
+        width: 100%;
+        max-width: 18.75rem;
+    }
+
+    .search-bar input {
+        padding: 0.5rem;
+        border-radius: 1.25rem;
+        border: none;
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    .container {
+        margin-top: 5rem;
+        padding: 1.25rem;
+        width: 90%;
+        max-width: 75rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .review-form {
+        background: white;
+        padding: 1.25rem;
+        border-radius: 0.625rem;
+        box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.25rem;
+    }
+
+    .review-form input[type="text"],
+    .reply-form input[type="text"] {
+        width: 100%;
+        padding: 0.625rem;
+        border-radius: 0.3125rem;
+        border: 1px solid #ddd;
+        margin-bottom: 0.625rem;
+        font-size: 1rem;
+    }
+
+    .review-form textarea,
+    .reply-form textarea {
+        width: 100%;
+        height: clamp(3.75rem, 15vh, 6rem);
+        padding: 0.625rem;
+        border-radius: 0.3125rem;
+        border: 1px solid #ddd;
+        margin-bottom: 0.625rem;
+        font-size: 1rem;
+        resize: vertical;
+    }
+
+    .review-form button,
+    .reply-form button {
+        background-color: #00bfff;
+        color: white;
+        padding: 0.5rem 1rem W;
+        border: none;
+        border-radius: 1.25rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 1rem;
+    }
+
+    .review-form button:hover,
+    .reply-form button:hover {
+        background-color: #008bb0;
+    }
+
+    .reviews-list {
+        background: white;
+        padding: 1.25rem;
+        border-radius: 0.625rem;
+        box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
+    }
+
+    .review-item {
+        border-bottom: 1px solid #ddd;
+        padding: 0.9375rem 0;
+    }
+
+    .review-item:last-child {
+        border-bottom: none;
+    }
+
+    .review-item .username {
+        font-weight: bold;
+        color: #2575fc;
+        margin-bottom: 0.3125rem;
+        font-size: clamp(1rem, 3vw, 1.2rem);
+    }
+
+    .review-item p {
+        margin: 0.3125rem 0;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+    }
+
+    .review-item .timestamp {
+        color: #888;
+        font-size: clamp(0.7rem, 2vw, 0.75rem);
+    }
+
+    .review-count {
+        margin-top: 0.9375rem;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        color: #555;
+        text-align: center;
+    }
+
+    .like-section,
+    .reply-like-section {
+        display: flex;
+        align-items: center;
+        margin-top: 0.625rem;
+    }
+
+    .like-button,
+    .reply-like-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.25rem;
+        color: #888;
+        transition: color 0.3s;
+    }
+
+    .like-button.liked,
+    .reply-like-button.liked {
+        color: #ff4d4d;
+    }
+
+    .like-count,
+    .reply-like-count {
+        margin-left: 0.3125rem;
+        font-size: clamp(0.8rem, 2vw, 0.875rem);
+        color: #555;
+    }
+
+    .reply-section {
+        margin-top: 0.625rem;
+    }
+
+    .reply-form {
+        margin-top: 0.625rem;
+        padding: 0.625rem;
+        background: #f9f9f9;
+        border-radius: 0.3125rem;
+    }
+
+    .replies-list {
+        margin-top: 0.625rem;
+        padding-left: 1.25rem;
+    }
+
+    .reply-item {
+        padding: 0.3125rem 0;
+        border-top: 1px solid #eee;
+    }
+
+    .reply-item .username {
+        font-weight: bold;
+        color: #555;
+        font-size: clamp(0.8rem, 2vw, 0.875rem);
+    }
+
+    .reply-item p {
+        margin: 0.125rem 0;
+        font-size: clamp(0.8rem, 2vw, 0.875rem);
+    }
+
+    .reply-item .timestamp {
+        color: #888;
+        font-size: clamp(0.7rem, 1.5vw, 0.75rem);
+    }
+
+    .toggle-replies {
+        background: none;
+        border: none;
+        color: #2575fc;
+        cursor: pointer;
+        font-size: clamp(0.8rem, 2vw, 0.875rem);
+        margin-top: 0.3125rem;
+    }
+
+    .admin-button {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 1.875rem;
+        height: 1.875rem;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 1001;
+    }
+
+    .block-button,
+    .unblock-button {
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border: none;
+        border-radius: 0.625rem;
+        cursor: pointer;
+        margin-top: 0.3125rem;
+        display: none;
+        font-size: clamp(0.7rem, 2vw, 0.875rem);
+    }
+
+    .block-button {
+        background-color: #ff4444;
+    }
+
+    .block-button:hover {
+        background-color: #cc0000;
+    }
+
+    .unblock-button {
+        background-color: #4CAF50;
+    }
+
+    .unblock-button:hover {
+        background-color: #45a049;
+    }
+
+    @media (max-width: 768px) {
         .top-bar {
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: white;
-            padding: 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-
-        .top-bar h1 {
-            font-size: clamp(1.2rem, 4vw, 1.5rem);
-            margin: 0;
+            flex-direction: column;
+            padding: 0.75rem;
         }
 
         .search-bar {
-            width: 100%;
-            max-width: 18.75rem;
-        }
-
-        .search-bar input {
-            padding: 0.5rem;
-            border-radius: 1.25rem;
-            border: none;
-            width: 100%;
-            font-size: 1rem;
-        }
-
-        .user-section {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .user-section img {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-        }
-
-        .user-section button {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1rem;
+            margin-top: 0.5rem;
+            max-width: 100%;
         }
 
         .container {
-            margin-top: 5rem;
-            padding: 1.25rem;
-            width: 90%;
-            max-width: 75rem;
-            margin-left: auto;
-            margin-right: auto;
+            padding: 0.75rem;
+            width: 95%;
         }
 
-        .review-form {
-            background: white;
-            padding: 1.25rem;
-            border-radius: 0.625rem;
-            box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.25rem;
+        .review-form,
+        .reviews-list {
+            padding: 0.75rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        body {
+            font-size: 14px;
         }
 
-        .review-form input[type="text"],
-        .reply-form input[type="text"] {
-            width: 100%;
-            padding: 0.625rem;
-            border-radius: 0.3125rem;
-            border: 1px solid #ddd;
-            margin-bottom: 0.625rem;
-            font-size: 1rem;
-        }
-
-        .review-form textarea,
-        .reply-form textarea {
-            width: 100%;
-            height: clamp(3.75rem, 15vh, 6rem);
-            padding: 0.625rem;
-            border-radius: 0.3125rem;
-            border: 1px solid #ddd;
-            margin-bottom: 0.625rem;
-            font-size: 1rem;
-            resize: vertical;
+        .top-bar h1 {
+            font-size: clamp(1rem, 5vw, 1.2rem);
         }
 
         .review-form button,
         .reply-form button {
-            background-color: #00bfff;
-            color: white;
-            padding: 0.5rem 1rem; /* Исправлено: убрано "W" */
-            border: none;
-            border-radius: 1.25rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            font-size: 1rem;
-        }
-
-        .review-form button:hover,
-        .reply-form button:hover {
-            background-color: #008bb0;
-        }
-
-        .reviews-list {
-            background: white;
-            padding: 1.25rem;
-            border-radius: 0.625rem;
-            box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
-        }
-
-        .review-item {
-            border-bottom: 1px solid #ddd;
-            padding: 0.9375rem 0;
-            display: flex;
-            gap: 1rem;
-        }
-
-        .review-item:last-child {
-            border-bottom: none;
-        }
-
-        .review-item .avatar {
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%;
-        }
-
-        .review-item .content {
-            flex: 1;
-        }
-
-        .review-item .username {
-            font-weight: bold;
-            color: #2575fc;
-            margin-bottom: 0.3125rem;
-            font-size: clamp(1rem, 3vw, 1.2rem);
-        }
-
-        .review-item p {
-            margin: 0.3125rem 0;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-        }
-
-        .review-item .timestamp {
-            color: #888;
-            font-size: clamp(0.7rem, 2vw, 0.75rem);
-        }
-
-        .review-count {
-            margin-top: 0.9375rem;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            color: #555;
-            text-align: center;
-        }
-
-        .like-section,
-        .reply-like-section {
-            display: flex;
-            align-items: center;
-            margin-top: 0.625rem;
+            width: 100%;
+            padding: 0.625rem;
         }
 
         .like-button,
         .reply-like-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.25rem;
-            color: #888;
-            transition: color 0.3s;
+            font-size: 1rem;
         }
+    }
+</style>
 
-        .like-button.liked,
-        .reply-like-button.liked {
-            color: #ff4d4d;
-        }
-
-        .like-count,
-        .reply-like-count {
-            margin-left: 0.3125rem;
-            font-size: clamp(0.8rem, 2vw, 0.875rem);
-            color: #555;
-        }
-
-        .reply-section {
-            margin-top: 0.625rem;
-        }
-
-        .reply-form {
-            margin-top: 0.625rem;
-            padding: 0.625rem;
-            background: #f9f9f9;
-            border-radius: 0.3125rem;
-        }
-
-        .replies-list {
-            margin-top: 0.625rem;
-            padding-left: 1.25rem;
-        }
-
-        .reply-item {
-            padding: 0.3125rem 0;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 1rem;
-        }
-
-        .reply-item .avatar {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-        }
-
-        .reply-item .content {
-            flex: 1;
-        }
-
-        .reply-item .username {
-            font-weight: bold;
-            color: #555;
-            font-size: clamp(0.8rem, 2vw, 0.875rem);
-        }
-
-        .reply-item p {
-            margin: 0.125rem 0;
-            font-size: clamp(0.8rem, 2vw, 0.875rem);
-        }
-
-        .reply-item .timestamp {
-            color: #888;
-            font-size: clamp(0.7rem, 1.5vw, 0.75rem);
-        }
-
-        .toggle-replies {
-            background: none;
-            border: none;
-            color: #2575fc;
-            cursor: pointer;
-            font-size: clamp(0.8rem, 2vw, 0.875rem);
-            margin-top: 0.3125rem;
-        }
-
-        .admin-button {
-            position: fixed;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 1.875rem;
-            height: 1.875rem;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 1001;
-        }
-
-        .block-button,
-        .unblock-button {
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border: none;
-            border-radius: 0.625rem;
-            cursor: pointer;
-            margin-top: 0.3125rem;
-            display: none;
-            font-size: clamp(0.7rem, 2vw, 0.875rem);
-        }
-
-        .block-button {
-            background-color: #ff4444;
-        }
-
-        .block-button:hover {
-            background-color: #cc0000;
-        }
-
-        .unblock-button {
-            background-color: #4CAF50;
-        }
-
-        .unblock-button:hover {
-            background-color: #45a049;
-        }
-
-        @media (max-width: 768px) {
-            .top-bar {
-                flex-direction: column;
-                padding: 0.75rem;
-            }
-
-            .search-bar {
-                margin-top: 0.5rem;
-                max-width: 100%;
-            }
-
-            .container {
-                padding: 0.75rem;
-                width: 95%;
-            }
-
-            .review-form,
-            .reviews-list {
-                padding: 0.75rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body {
-                font-size: 14px;
-            }
-
-            .top-bar h1 {
-                font-size: clamp(1rem, 5vw, 1.2rem);
-            }
-
-            .review-form button,
-            .reply-form button {
-                width: 100%;
-                padding: 0.625rem;
-            }
-
-            .like-button,
-            .reply-like-button {
-                font-size: 1rem;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -359,532 +315,475 @@
         <div class="search-bar">
             <input type="text" placeholder="Поиск отзывов..." id="searchInput">
         </div>
-        <div class="user-section" id="userSection">
-            <button id="loginButton" onclick="signInWithGoogle()">Войти через Google</button>
-        </div>
     </div>
+<button class="admin-button" onclick="promptAdminPassword()"></button>
 
-    <button class="admin-button" onclick="promptAdminPassword()"></button>
-
-    <div class="container">
-        <div class="review-form" id="reviewForm">
-            <h2>Оставьте свой отзыв</h2>
-            <input type="text" id="username" placeholder="Ваше имя или никнейм">
-            <textarea id="reviewText" placeholder="Ваш отзыв..."></textarea>
-            <button onclick="addReview()">Отправить</button>
-        </div>
-        <div class="review-count" id="reviewCount">Всего отзывов: 0</div>
-
-        <div class="reviews-list" id="reviewsList"></div>
+<div class="container">
+    <div class="review-form">
+        <h2>Оставьте свой отзыв</h2>
+        <input type="text" id="username" placeholder="Ваше имя или никнейм">
+        <textarea id="reviewText" placeholder="Ваш отзыв..."></textarea>
+        <button onclick="addReview()">Отправить</button>
     </div>
+    <div class="review-count" id="reviewCount">Всего отзывов: 0</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    <div class="reviews-list" id="reviewsList"></div>
+</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAxp9yWxNndxvbJ_OpogAkDWjdqpOWuGbg",
-            authDomain: "sait-4c17b.firebaseapp.com",
-            projectId: "sait-4c17b",
-            storageBucket: "sait-4c17b.firebasestorage.app",
-            messagingSenderId: "839932702171",
-            appId: "1:839932702171:web:81c83b75faba16f90b4bfe",
-            measurementId: "G-28M72NML99"
-        };
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+    const firebaseConfig = {
+        apiKey: "AIzaSyAxp9yWxNndxvbJ_OpogAkDWjdqpOWuGbg",
+        authDomain: "sait-4c17b.firebaseapp.com",
+        projectId: "sait-4c17b",
+        storageBucket: "sait-4c17b.firebasestorage.app",
+        messagingSenderId: "839932702171",
+        appId: "1:839932702171:web:81c83b75faba16f90b4bfe",
+        measurementId: "G-28M72NML99"
+    };
 
-        let userIP = null;
-        let isAdmin = false;
-        let ADMIN_PASSWORD = null;
-        let currentUser = null;
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        const forbiddenWords = [
-            "создатель", "Sozdatrl", "sozdatrl", "Admin", "admin", "Админ", "админ", "админус",
-            "создательс", "пидорасик", "пидорас", "Пидорас", "Пидорасик", "Пидор", "Сука", "Артем + Вова", "🏆",
-            "Щавель", "Лосось", "Создэтэл", "Creator", "Создитиль", "Артем", "Создателт", "Создатэль", "Создитильница",
-            "Дротильнрк", "Создаемый", "Шлепок", "Писун", "🎰", "с0здатель", "coздатель", "создaтель", "созд@тель", "сoздатель",
-            "создaтeль", "создатељ", "создàтель", "создâtель", "создαтель", "сozдатель", "созд∆тель", "создãтель", "создätель",
-            "создaтeљь", "создáteľ", "созд4тель", "создaтёль", "создaтeлb", "создaтeлъ", "сoздaтель", "с0здaтeль", "cоздaтель",
-            "создaтeл", "сo3датель", "создaтeльница", "сoзд∆тeль", "создaтéль", "создątель", "создaтęль", "сoздaтeл", "создaт3ль",
-            "создaт€ль", "сoздaт€лb", "создâtéль", "создaтèль", "создaтêль", "сoздaтêл", "создaтël", "сoздãтël", "создaтeлй",
-            "создaтeлi", "сoздaтeлi", "создaтeл!", "сoздaтeл!", "создaтель123", "сoздaтель123", "созд∆тeлb", "создaтeл#", "сoздaтeл#",
-            "создaтeл$", "создaтeл%", "сoздaтeл&", "создaтeл*", "создaтeл(", "создaтeл)", "сoздaтeл+", "создaтeл-", "создaтeл=", "сoздaтeл_",
-            "создaтeл|", "создaтeл/", "создaтeл\\", "сoздaтeл?", "создaтeл.", "создaтeл,", "сoздaтeл;", "создaтeл:", "создaтeл<", "сoздaтeл>",
-            "создaтeл[", "создaтeл]", "создaтeл{", "сoздaтeл}", "создaтeл~", "создaтeл`", "сoздaтeл^", "создaтeл№", "создaтeл@", "создaтeлΩ", "сoздaтeлπ",
-            "создaтeлµ", "создaтeл∞", "создaтeл√", "сoздaтeл∑", "создaтeл∫", "создaтeлθ", "создaтeлλ", "сoздaтeлφ", "создaтeлψ", "создaтeлχ", "создaтeлσ",
-            "сoздaтeлτ", "создaтeлυ", "создaтeлω", "создaтeлγ", "сoздaтeлδ", "создaтeлε", "создaтeлζ", "сoздaтeлη", "создaтeлι", "создaтeлκ", "создaтeлν",
-            "сoздaтeлξ", "создaтeлο", "создaтeлρ", "создaтeлς", "сoздaтeлт", "создaтeлn", "создaтeлm", "создaтeлk", "сoздaтeлj", "создaтeлh", "создaтeлg",
-            "создaтeлf", "сoздaтeлd", "создaтeлs", "создaтeлa", "создaтeлp", "создaтeлo", "сoздaтeлu", "создaтeлy", "создaтeлt", "создaтeлr", "сoздaтeлe",
-            "создaтeлw", "создaтeлq", "создaтeлx", "создaтeлc", "сoздaтeлv", "создaтeлz", "создaтeл1", "создaтeл2", "сoздaтeл3", "создaтeл5", "создaтeл6",
-            "создaтeл7", "сoздaтeл8", "создaтeл9", "создaтeл0", "сoзд∆тeл", "сoздaтeл☆", "создaтeл★", "создaтeл✪", "сoздaтeл✿", "создaтeл❀", "создaтeл❁",
-            "создaтeл♪", "сoздaтeл♫", "создaтeл♬", "создaтeл♭", "создaтeл♮", "сoздaтeл♯", "создaтeл✈", "создaтeл☀", "создaтeл☁", "сoздaтeл☂", "создaтeл☃",
-            "создaтeл☄", "создaтeл★", "сoздaтeл☆", "создaтeл✰", "создaтeл✯", "создaтeл✮", "сoздaтeл✬", "создaтeл✫", "создaтeл✩", "создaтeл✧", "сoздaтeл✦",
-            "создaтeл✥", "создaтeл✤", "создaтeл✣", "сoздaтeл✢", "создaтeл✡", "создaтeл✠", "создaтeл✟", "сoздaтeл✞", "создaтeл✝", "создaтeл☮", "создaтeл☯",
-            "сoздaтeл☸", "создaтeл☹", "создaтeл☺", "создaтeл☻", "сoздaтeл☼", "создaтeл♠", "создaтeл♣", "создaтeл♥", "сoздaтeл♦", "создaтeл♤", "создaтeл♧",
-            "создaтeл♡", "сoздaтeл♢", "создaтeл⚀", "создaтeл⚁", "создaтeл⚂", "сoздaтeл⚃", "создaтeл⚄", "создaтeл⚅", "создaтeл⚛", "создaтeл⚜", "сoздaтeл⚝",
-            "создaтeл⚠", "создaтeл⚡", "создaтeл⚪", "сoздaтeл⚫", "создaтeл⚬", "создaтeл⚭", "создaтeл⚮", "сoздaтeл⚯", "создaтeл⚰", "создaтeл⚱", "создaтeл⚲",
-            "сoздaтeл⚳", "создaтeл⚴", "создaтeл⚵", "создaтeл⚶", "сoздaтeл⚷", "создaтeл⚸", "создaтeл⚹", "создaтeл⚺", "создaтeл⚻", "создaтeл⚼", "создaтeл⚽",
-            "создaтeл⚾", "создaтeл⚿", "создaтeл⛀", "создaтeл⛁", "создaтeл⛂", "создaтeл⛃", "создaтeл⛄", "создaтeл⛅", "создaтeл⛆", "создaтeл⛇", "создaтeл⛈",
-            "создaтeл⛉", "создaтeл⛊", "создaтeл⛋", "создaтeл⛌", "создaтeл⛍", "создaтeл⛎", "создaтeл⛏", "создaтeл⛐", "создaтeл⛑", "создaтeл⛒", "создaтeл⛓",
-            "создaтeл⛔", "создaтeл⛕", "создaтeл⛖", "создaтeл⛗", "создaтeл⛘", "создaтeл⛙", "создaтeл⛚", "создaтeл⛛", "создaтeл⛜", "создaтeл⛝", "создaтeл⛞",
-            "создaтeл⛟", "создaтeл⛠", "создaтeл⛡", "создaтeл⛢", "создaтeл⛣", "создaтeл⛤", "создaтeл⛥", "создaтeл⛦", "создaтeл⛧", "создaтeл⛨", "создaтeл⛩",
-            "создaтeл⛪", "создaтeл⛫", "создaтeл⛬", "создaтeл⛭", "создaтeл⛮", "создaтeл⛯", "создaтeл⛰", "создaтeл⛱", "создaтeл⛲", "создaтeл⛳", "создaтeл⛴",
-            "создaтeл⛵", "создaтeл⛶", "создaтeл⛷", "создaтeл⛸", "создaтeл⛹", "создaтeл⛺", "создaтeл⛻", "создaтeл⛼", "создaтeл⛽", "создaтeл⛾", "создaтeл⛿",
-            "создaтeл✀", "создaтeл✁", "создaтeл✂", "создaтeл✃", "создaтeл✄", "создaтeл✅", "создaтeл✆", "создaтeл✇", "создaтeл✈", "создaтeл✉", "создaтeл✊",
-            "создaтeл✋", "создaтeл✌", "создaтeл✍", "создaтeл✎", "создaтeл✏", "создaтeл✐", "создaтeл✑", "создaтeл✒", "создaтeл✓", "создaтeл✔", "создaтeл✕",
-            "создaтeл✖", "создaтeл✗", "создaтeл✘", "создaтeл✙", "создaтeл✚", "создaтeл✛", "создaтeл✜", "создaтeл✝", "создaтeл✞", "создaтeл✟", "создaтeл✠", "создaтeл✡",
-            "создaтeл✢", "создaтeл✣", "создaтeл✤", "создaтeл✥", "создaтeл✦", "создaтeл✧", "создaтeл✨", "создaтeл✩", "создaтeл✪", "создaтeл✫", "создaтeл✬", "создaтeл✭",
-            "создaтeл✮", "создaтeл✯", "создaтeл✰", "создaтeл✱", "создaтeл✲", "создaтeл✳", "создaтeл✴"
-        ];
+    let userIP = null;
+    let isAdmin = false;
+    let ADMIN_PASSWORD = null;
 
-        async function getUserIP() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                userIP = data.ip;
-            } catch (e) {
-                console.error("Ошибка при получении IP: ", e);
-                userIP = 'unknown';
-            }
-        }
+    const forbiddenWords = [
+        "создатель", "Sozdatrl", "sozdatrl", "Admin", "admin", "Админ", "админ", "админус",
+        "создательс", "пидорасик", "пидорас", "Пидорас", "Пидорасик", "Пидор", "Сука", "Артем + Вова", "🏆",
+        "Щавель", "Лосось", "Создэтэл", "Creator", "Создитиль", "Артем", "Создателт", "Создатэль", "Создитильница",
+        "Дротильнрк", "Создаемый", "Шлепок", "Писун", "🎰", "с0здатель", "coздатель", "создaтель", "созд@тель", "сoздатель",
+        "создaтeль", "создатељ", "создàтель", "создâtель", "создαтель", "сozдатель", "созд∆тель", "создãтель", "создätель",
+        "создaтeљь", "создáteľ", "созд4тель", "создaтёль", "создaтeлb", "создaтeлъ", "сoздaтель", "с0здaтeль", "cоздaтель",
+        "создaтeл", "сo3датель", "создaтeльница", "сoзд∆тeль", "создaтéль", "создątель", "создaтęль", "сoздaтeл", "создaт3ль",
+        "создaт€ль", "сoздaт€лb", "создâtéль", "создaтèль", "создaтêль", "сoздaтêл", "создaтël", "сoздãтël", "создaтeлй",
+        "создaтeлi", "сoздaтeлi", "создaтeл!", "сoздaтeл!", "создaтель123", "сoздaтель123", "созд∆тeлb", "создaтeл#", "сoздaтeл#",
+        "создaтeл$", "создaтeл%", "сoздaтeл&", "создaтeл*", "создaтeл(", "создaтeл)", "сoздaтeл+", "создaтeл-", "создaтeл=", "сoздaтeл_",
+        "создaтeл|", "создaтeл/", "создaтeл\\", "сoздaтeл?", "создaтeл.", "создaтeл,", "сoздaтeл;", "создaтeл:", "создaтeл<", "сoздaтeл>",
+        "создaтeл[", "создaтeл]", "создaтeл{", "сoздaтeл}", "создaтeл~", "создaтeл`", "сoздaтeл^", "создaтeл№", "создaтeл@", "создaтeлΩ", "сoздaтeлπ",
+        "создaтeлµ", "создaтeл∞", "создaтeл√", "сoздaтeл∑", "создaтeл∫", "создaтeлθ", "создaтeлλ", "сoздaтeлφ", "создaтeлψ", "создaтeлχ", "создaтeлσ",
+        "сoздaтeлτ", "создaтeлυ", "создaтeлω", "создaтeлγ", "сoздaтeлδ", "создaтeлε", "создaтeлζ", "сoздaтeлη", "создaтeлι", "создaтeлκ", "создaтeлν",
+        "сoздaтeлξ", "создaтeлο", "создaтeлρ", "создaтeлς", "сoздaтeлт", "создaтeлn", "создaтeлm", "создaтeлk", "сoздaтeлj", "создaтeлh", "создaтeлg",
+        "создaтeлf", "сoздaтeлd", "создaтeлs", "создaтeлa", "создaтeлp", "создaтeлo", "сoздaтeлu", "создaтeлy", "создaтeлt", "создaтeлr", "сoздaтeлe",
+        "создaтeлw", "создaтeлq", "создaтeлx", "создaтeлc", "сoздaтeлv", "создaтeлz", "создaтeл1", "создaтeл2", "сoздaтeл3", "создaтeл5", "создaтeл6",
+        "создaтeл7", "сoздaтeл8", "создaтeл9", "создaтeл0", "сoзд∆тeл", "сoздaтeл☆", "создaтeл★", "создaтeл✪", "сoздaтeл✿", "создaтeл❀", "создaтeл❁",
+        "создaтeл♪", "сoздaтeл♫", "создaтeл♬", "создaтeл♭", "создaтeл♮", "сoздaтeл♯", "создaтeл✈", "создaтeл☀", "создaтeл☁", "сoздaтeл☂", "создaтeл☃",
+        "создaтeл☄", "создaтeл★", "сoздaтeл☆", "создaтeл✰", "создaтeл✯", "создaтeл✮", "сoздaтeл✬", "создaтeл✫", "создaтeл✩", "создaтeл✧", "сoздaтeл✦",
+        "создaтeл✥", "создaтeл✤", "создaтeл✣", "сoздaтeл✢", "создaтeл✡", "создaтeл✠", "создaтeл✟", "сoздaтeл✞", "создaтeл✝", "создaтeл☮", "создaтeл☯",
+        "сoздaтeл☸", "создaтeл☹", "создaтeл☺", "создaтeл☻", "сoздaтeл☼", "создaтeл♠", "создaтeл♣", "создaтeл♥", "сoздaтeл♦", "создaтeл♤", "создaтeл♧",
+        "создaтeл♡", "сoздaтeл♢", "создaтeл⚀", "создaтeл⚁", "создaтeл⚂", "сoздaтeл⚃", "создaтeл⚄", "создaтeл⚅", "создaтeл⚛", "создaтeл⚜", "сoздaтeл⚝",
+        "создaтeл⚠", "создaтeл⚡", "создaтeл⚪", "сoздaтeл⚫", "создaтeл⚬", "создaтeл⚭", "создaтeл⚮", "сoздaтeл⚯", "создaтeл⚰", "создaтeл⚱", "создaтeл⚲",
+        "сoздaтeл⚳", "создaтeл⚴", "создaтeл⚵", "создaтeл⚶", "сoздaтeл⚷", "создaтeл⚸", "создaтeл⚹", "создaтeл⚺", "создaтeл⚻", "создaтeл⚼", "создaтeл⚽",
+        "создaтeл⚾", "создaтeл⚿", "создaтeл⛀", "создaтeл⛁", "создaтeл⛂", "создaтeл⛃", "создaтeл⛄", "создaтeл⛅", "создaтeл⛆", "создaтeл⛇", "создaтeл⛈",
+        "создaтeл⛉", "создaтeл⛊", "создaтeл⛋", "создaтeл⛌", "создaтeл⛍", "создaтeл⛎", "создaтeл⛏", "создaтeл⛐", "создaтeл⛑", "создaтeл⛒", "создaтeл⛓",
+        "создaтeл⛔", "создaтeл⛕", "создaтeл⛖", "создaтeл⛗", "создaтeл⛘", "создaтeл⛙", "создaтeл⛚", "создaтeл⛛", "создaтeл⛜", "создaтeл⛝", "создaтeл⛞",
+        "создaтeл⛟", "создaтeл⛠", "создaтeл⛡", "создaтeл⛢", "создaтeл⛣", "создaтeл⛤", "создaтeл⛥", "создaтeл⛦", "создaтeл⛧", "создaтeл⛨", "создaтeл⛩",
+        "создaтeл⛪", "создaтeл⛫", "создaтeл⛬", "создaтeл⛭", "создaтeл⛮", "создaтeл⛯", "создaтeл⛰", "создaтeл⛱", "создaтeл⛲", "создaтeл⛳", "создaтeл⛴",
+        "создaтeл⛵", "создaтeл⛶", "создaтeл⛷", "создaтeл⛸", "создaтeл⛹", "создaтeл⛺", "создaтeл⛻", "создaтeл⛼", "создaтeл⛽", "создaтeл⛾", "создaтeл⛿",
+        "создaтeл✀", "создaтeл✁", "создaтeл✂", "создaтeл✃", "создaтeл✄", "создaтeл✅", "создaтeл✆", "создaтeл✇", "создaтeл✈", "создaтeл✉", "создaтeл✊",
+        "создaтeл✋", "создaтeл✌", "создaтeл✍", "создaтeл✎", "создaтeл✏", "создaтeл✐", "создaтeл✑", "создaтeл✒", "создaтeл✓", "создaтeл✔", "создaтeл✕",
+        "создaтeл✖", "создaтeл✗", "создaтeл✘", "создaтeл✙", "создaтeл✚", "создaтeл✛", "создaтeл✜", "создaтeл✝", "создaтeл✞", "создaтeл✟", "создaтeл✠", "создaтeл✡",
+        "создaтeл✢", "создaтeл✣", "создaтeл✤", "создaтeл✥", "создaтeл✦", "создaтeл✧", "создaтeл✨", "создaтeл✩", "создaтeл✪", "создaтeл✫", "создaтeл✬", "создaтeл✭",
+        "создaтeл✮", "создaтeл✯", "создaтeл✰", "создaтeл✱", "создaтeл✲", "создaтeл✳", "создaтeл✴"
+    ];
 
-        window.signInWithGoogle = async function () {
-            try {
-                if (currentUser) {
-                    await signOut(auth);
-                    alert("Вы вышли из аккаунта!");
-                } else {
-                    const result = await signInWithPopup(auth, provider);
-                    currentUser = result.user;
-                    alert(`Добро пожаловать, ${currentUser.displayName}!`);
-                }
-            } catch (e) {
-                console.error("Ошибка авторизации: ", e);
-                alert("Ошибка авторизации: " + e.message);
-            }
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            const userSection = document.getElementById('userSection');
-            if (user) {
-                userSection.innerHTML = `
-                    <img src="${user.photoURL || 'https://via.placeholder.com/32'}" alt="User Avatar">
-                    <span>${user.displayName}</span>
-                    <button id="loginButton" onclick="signInWithGoogle()">Выйти</button>
-                `;
-                document.getElementById('username').style.display = 'none';
-                document.querySelectorAll('input[id^="reply-username-"]').forEach(input => {
-                    input.style.display = 'none';
-                });
+    async function loadAdminPassword() {
+        try {
+            const adminDocRef = doc(db, "adminConfig", "settings");
+            const adminDoc = await getDoc(adminDocRef);
+            if (adminDoc.exists()) {
+                ADMIN_PASSWORD = adminDoc.data().adminPassword;
             } else {
-                userSection.innerHTML = `
-                    <button id="loginButton" onclick="signInWithGoogle()">Войти через Google</button>
-                `;
-                document.getElementById('username').style.display = 'block';
-                document.querySelectorAll('input[id^="reply-username-"]').forEach(input => {
-                    input.style.display = 'block';
-                });
+                console.error("Документ с паролем не найден!");
+                alert("Ошибка: Пароль администратора не настроен.");
             }
+        } catch (e) {
+            console.error("Ошибка при загрузке пароля: ", e);
+        }
+    }
+
+    async function getUserIP() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            userIP = data.ip;
+        } catch (e) {
+            console.error("Ошибка при получении IP: ", e);
+            userIP = 'unknown';
+        }
+    }
+
+    loadAdminPassword();
+    getUserIP();
+
+    window.promptAdminPassword = async function () {
+        if (ADMIN_PASSWORD === null) {
+            alert("Пароль администратора ещё не загружен. Попробуйте позже.");
+            return;
+        }
+        const password = prompt("Введите пароль администратора:");
+        if (password === ADMIN_PASSWORD) {
+            isAdmin = true;
+            alert("Вы вошли как администратор!");
+            showAdminControls();
+            hideUsernameInputs();
+        } else {
+            alert("Неверный пароль!");
+        }
+    };
+
+    function showAdminControls() {
+        document.querySelectorAll('.block-button').forEach(btn => btn.style.display = 'inline-block');
+        document.querySelectorAll('.unblock-button').forEach(btn => btn.style.display = 'inline-block');
+    }
+
+    function hideUsernameInputs() {
+        document.getElementById('username').style.display = 'none';
+        document.querySelectorAll('input[id^="reply-username-"]').forEach(input => {
+            input.style.display = 'none';
         });
+    }
 
-        async function loadAdminPassword() {
-            try {
-                const adminDocRef = doc(db, "adminConfig", "settings");
-                const adminDoc = await getDoc(adminDocRef);
-                if (adminDoc.exists()) {
-                    ADMIN_PASSWORD = adminDoc.data().adminPassword;
-                } else {
-                    console.error("Документ с паролем не найден!");
-                    alert("Ошибка: Пароль администратора не настроен.");
-                }
-            } catch (e) {
-                console.error("Ошибка при загрузке пароля: ", e);
-            }
+    async function isIPBlocked(ip) {
+        const blockRef = doc(db, "blockedIPs", ip);
+        const blockDoc = await getDoc(blockRef);
+        return blockDoc.exists();
+    }
+
+    async function hasIPReviewed(ip) {
+        const ipRef = doc(db, "reviewedIPs", ip);
+        const ipDoc = await getDoc(ipRef);
+        return ipDoc.exists();
+    }
+
+    window.blockUser = async function (ip, reviewId) {
+        if (!isAdmin) {
+            alert("Только администратор может блокировать пользователей!");
+            return;
         }
-
-        loadAdminPassword();
-        getUserIP();
-
-        window.promptAdminPassword = async function () {
-            if (ADMIN_PASSWORD === null) {
-                alert("Пароль администратора ещё не загружен. Попробуйте позже.");
-                return;
-            }
-            const password = prompt("Введите пароль администратора:");
-            if (password === ADMIN_PASSWORD) {
-                isAdmin = true;
-                alert("Вы вошли как администратор!");
-                showAdminControls();
-                hideUsernameInputs();
-            } else {
-                alert("Неверный пароль!");
-            }
-        };
-
-        function showAdminControls() {
-            document.querySelectorAll('.block-button').forEach(btn => btn.style.display = 'inline-block');
-            document.querySelectorAll('.unblock-button').forEach(btn => btn.style.display = 'inline-block');
-        }
-
-        function hideUsernameInputs() {
-            document.getElementById('username').style.display = 'none';
-            document.querySelectorAll('input[id^="reply-username-"]').forEach(input => {
-                input.style.display = 'none';
+        try {
+            await setDoc(doc(db, "blockedIPs", ip), {
+                blockedAt: new Date().toISOString(),
+                reviewId: reviewId
             });
+            alert(`IP ${ip} заблокирован!`);
+        } catch (e) {
+            console.error("Ошибка блокировки IP: ", e);
+        }
+    };
+
+    window.unblockUser = async function (ip) {
+        if (!isAdmin) {
+            alert("Только администратор может разблокировать пользователей!");
+            return;
+        }
+        try {
+            await deleteDoc(doc(db, "blockedIPs", ip));
+            alert(`IP ${ip} разблокирован!`);
+        } catch (e) {
+            console.error("Ошибка разблокировки IP: ", e);
+        }
+    };
+
+    window.addReview = async function () {
+        let username = document.getElementById('username').value.trim();
+        const reviewText = document.getElementById('reviewText').value.trim();
+
+        if (!reviewText) {
+            alert('Заполните поле отзыва!');
+            return;
         }
 
-        async function isIPBlocked(ip) {
-            const blockRef = doc(db, "blockedIPs", ip);
-            const blockDoc = await getDoc(blockRef);
-            return blockDoc.exists();
+        if (!userIP) {
+            alert('Не удалось определить IP. Попробуйте снова.');
+            return;
         }
 
-        async function hasIPReviewed(ip) {
-            const ipRef = doc(db, "reviewedIPs", ip);
-            const ipDoc = await getDoc(ipRef);
-            return ipDoc.exists();
-        }
-
-        window.blockUser = async function (ip, reviewId) {
-            if (!isAdmin) {
-                alert("Только администратор может блокировать пользователей!");
+        if (isAdmin) {
+            username = "Создатель";
+        } else {
+            if (!username) {
+                alert('Заполните поле имени!');
                 return;
             }
-            try {
-                await setDoc(doc(db, "blockedIPs", ip), {
-                    blockedAt: new Date().toISOString(),
-                    reviewId: reviewId
-                });
-                alert(`IP ${ip} заблокирован!`);
-            } catch (e) {
-                console.error("Ошибка блокировки IP: ", e);
-            }
-        };
-
-        window.unblockUser = async function (ip) {
-            if (!isAdmin) {
-                alert("Только администратор может разблокировать пользователей!");
+            if (forbiddenWords.some(word => username.toLowerCase().includes(word.toLowerCase()))) {
+                alert(`Никнейм "${username}" содержит запрещённое слово! Выберите другой.`);
+                document.getElementById('username').value = '';
                 return;
             }
-            try {
-                await deleteDoc(doc(db, "blockedIPs", ip));
-                alert(`IP ${ip} разблокирован!`);
-            } catch (e) {
-                console.error("Ошибка разблокировки IP: ", e);
-            }
-        };
-
-        window.addReview = async function () {
-            let username = currentUser ? currentUser.displayName : document.getElementById('username').value.trim();
-            const reviewText = document.getElementById('reviewText').value.trim();
-
-            if (!reviewText) {
-                alert('Заполните поле отзыва!');
-                return;
-            }
-
-            if (!userIP) {
-                alert('Не удалось определить IP. Попробуйте снова.');
-                return;
-            }
-
-            if (isAdmin) {
-                username = "Создатель";
-            } else if (!currentUser) {
-                if (!username) {
-                    alert('Заполните поле имени!');
-                    return;
-                }
-                if (forbiddenWords.some(word => username.toLowerCase().includes(word.toLowerCase()))) {
-                    alert(`Никнейм "${username}" содержит запрещённое слово! Выберите другой.`);
-                    document.getElementById('username').value = '';
-                    return;
-                }
-            }
-
             if (await isIPBlocked(userIP)) {
                 alert('Ваш IP заблокирован!');
                 return;
             }
-
             if (await hasIPReviewed(userIP)) {
                 alert('Вы уже оставили отзыв!');
                 return;
             }
+        }
 
-            try {
-                const reviewDoc = await addDoc(collection(db, "reviews"), {
-                    username,
-                    userId: currentUser ? currentUser.uid : null,
-                    photoURL: currentUser ? (currentUser.photoURL || 'https://via.placeholder.com/32') : 'https://via.placeholder.com/32',
-                    text: reviewText,
-                    timestamp: new Date().toISOString(),
-                    likes: 0,
-                    likedBy: [],
-                    replies: [],
-                    isRepliesExpanded: false,
-                    ip: userIP
+        try {
+            const reviewDoc = await addDoc(collection(db, "reviews"), {
+                username,
+                text: reviewText,
+                timestamp: new Date().toISOString(),
+                likes: 0,
+                likedBy: [],
+                replies: [],
+                isRepliesExpanded: false,
+                ip: userIP
+            });
+
+            if (!isAdmin) {
+                await setDoc(doc(db, "reviewedIPs", userIP), {
+                    reviewId: reviewDoc.id,
+                    timestamp: new Date().toISOString()
                 });
-
-                if (!isAdmin) {
-                    await setDoc(doc(db, "reviewedIPs", userIP), {
-                        reviewId: reviewDoc.id,
-                        timestamp: new Date().toISOString()
-                    });
-                }
-
-                document.getElementById('username').value = '';
-                document.getElementById('reviewText').value = '';
-                alert('Отзыв добавлен!');
-            } catch (e) {
-                console.error("Ошибка добавления отзыва: ", e);
             }
-        };
 
-        window.addReply = async function (reviewId) {
-            let replyUsername = currentUser ? currentUser.displayName : document.getElementById(`reply-username-${reviewId}`).value.trim();
-            const replyText = document.getElementById(`reply-text-${reviewId}`).value.trim();
+            document.getElementById('username').value = '';
+            document.getElementById('reviewText').value = '';
+            alert('Отзыв добавлен!');
+        } catch (e) {
+            console.error("Ошибка добавления отзыва: ", e);
+        }
+    };
 
-            if (!replyText) {
-                alert('Заполните поле ответа!');
+    window.addReply = async function (reviewId) {
+        let replyUsername = document.getElementById(`reply-username-${reviewId}`).value.trim();
+        const replyText = document.getElementById(`reply-text-${reviewId}`).value.trim();
+
+        if (!replyText) {
+            alert('Заполните поле ответа!');
+            return;
+        }
+
+        if (!userIP) {
+            alert('Не удалось определить IP. Попробуйте снова.');
+            return;
+        }
+
+        if (isAdmin) {
+            replyUsername = "Создатель";
+        } else {
+            if (!replyUsername) {
+                alert('Заполните поле имени!');
                 return;
             }
-
-            if (!userIP) {
-                alert('Не удалось определить IP. Попробуйте снова.');
+            if (forbiddenWords.some(word => replyUsername.toLowerCase().includes(word.toLowerCase()))) {
+                alert(`Никнейм "${replyUsername}" содержит запрещённое слово! Выберите другой.`);
+                document.getElementById(`reply-username-${reviewId}`).value = '';
                 return;
             }
-
-            if (isAdmin) {
-                replyUsername = "Создатель";
-            } else if (!currentUser) {
-                if (!replyUsername) {
-                    alert('Заполните поле имени!');
-                    return;
-                }
-                if (forbiddenWords.some(word => replyUsername.toLowerCase().includes(word.toLowerCase()))) {
-                    alert(`Никнейм "${replyUsername}" содержит запрещённое слово! Выберите другой.`);
-                    document.getElementById(`reply-username-${reviewId}`).value = '';
-                    return;
-                }
-            }
-
             if (await isIPBlocked(userIP)) {
                 alert('Ваш IP заблокирован!');
                 return;
             }
+        }
 
-            const reviewRef = doc(db, "reviews", reviewId);
-            try {
-                const reviewDoc = await getDoc(reviewRef);
-                if (!reviewDoc.exists()) throw new Error("Отзыв не найден");
+        const reviewRef = doc(db, "reviews", reviewId);
+        try {
+            const reviewDoc = await getDoc(reviewRef);
+            if (!reviewDoc.exists()) throw new Error("Отзыв не найден");
 
-                const review = reviewDoc.data();
-                const replies = review.replies || [];
-                replies.push({
-                    username: replyUsername,
-                    userId: currentUser ? currentUser.uid : null,
-                    photoURL: currentUser ? (currentUser.photoURL || 'https://via.placeholder.com/32') : 'https://via.placeholder.com/32',
-                    text: replyText,
-                    timestamp: new Date().toISOString(),
-                    ip: userIP,
-                    likes: 0,
-                    likedBy: []
-                });
+            const review = reviewDoc.data();
+            const replies = review.replies || [];
+            replies.push({
+                username: replyUsername,
+                text: replyText,
+                timestamp: new Date().toISOString(),
+                ip: userIP,
+                likes: 0,
+                likedBy: []
+            });
 
-                await updateDoc(reviewRef, { replies, isRepliesExpanded: true });
-                document.getElementById(`reply-username-${reviewId}`).value = '';
-                document.getElementById(`reply-text-${reviewId}`).value = '';
-                alert('Ответ добавлен!');
-            } catch (e) {
-                console.error("Ошибка добавления ответа: ", e);
-            }
-        };
+            await updateDoc(reviewRef, { replies, isRepliesExpanded: true });
+            document.getElementById(`reply-username-${reviewId}`).value = '';
+            document.getElementById(`reply-text-${reviewId}`).value = '';
+            alert('Ответ добавлен!');
+        } catch (e) {
+            console.error("Ошибка добавления ответа: ", e);
+        }
+    };
 
-        window.toggleReplies = async function (reviewId, isExpanded) {
-            try {
-                await updateDoc(doc(db, "reviews", reviewId), {
-                    isRepliesExpanded: !isExpanded
-                });
-            } catch (e) {
-                console.error("Ошибка переключения ответов: ", e);
-            }
-        };
+    window.toggleReplies = async function (reviewId, isExpanded) {
+        try {
+            await updateDoc(doc(db, "reviews", reviewId), {
+                isRepliesExpanded: !isExpanded
+            });
+        } catch (e) {
+            console.error("Ошибка переключения ответов: ", e);
+        }
+    };
 
-        window.toggleLike = async function (reviewId) {
-            if (!userIP) {
-                alert('Не удалось определить IP.');
-                return;
-            }
+    window.toggleLike = async function (reviewId) {
+        if (!userIP) {
+            alert('Не удалось определить IP.');
+            return;
+        }
 
-            const reviewRef = doc(db, "reviews", reviewId);
-            try {
-                const reviewDoc = await getDoc(reviewRef);
-                if (!reviewDoc.exists()) throw new Error("Отзыв не найден");
+        const reviewRef = doc(db, "reviews", reviewId);
+        try {
+            const reviewDoc = await getDoc(reviewRef);
+            if (!reviewDoc.exists()) throw new Error("Отзыв не найден");
 
-                const review = reviewDoc.data();
-                let likes = review.likes || 0;
-                let likedBy = review.likedBy || [];
-                const hasLiked = likedBy.includes(userIP);
+            const review = reviewDoc.data();
+            let likes = review.likes || 0;
+            let likedBy = review.likedBy || [];
+            const hasLiked = likedBy.includes(userIP);
 
-                if (hasLiked) {
-                    likes = Math.max(0, likes - 1);
-                    likedBy = likedBy.filter(ip => ip !== userIP);
-                    alert('Лайк убран.');
-                } else {
-                    likes += 1;
-                    likedBy.push(userIP);
-                    alert('Лайк добавлен!');
-                }
-
-                await updateDoc(reviewRef, { likes, likedBy });
-            } catch (e) {
-                console.error("Ошибка обновления лайков: ", e);
-            }
-        };
-
-        window.toggleReplyLike = async function (reviewId, replyIndex) {
-            if (!userIP) {
-                alert('Не удалось определить IP.');
-                return;
+            if (hasLiked) {
+                likes = Math.max(0, likes - 1);
+                likedBy = likedBy.filter(ip => ip !== userIP);
+                alert('Лайк убран.');
+            } else {
+                likes += 1;
+                likedBy.push(userIP);
+                alert('Лайк добавлен!');
             }
 
-            const reviewRef = doc(db, "reviews", reviewId);
-            try {
-                const reviewDoc = await getDoc(reviewRef);
-                if (!reviewDoc.exists()) throw new Error("Отзыв не найден");
+            await updateDoc(reviewRef, { likes, likedBy });
+        } catch (e) {
+            console.error("Ошибка обновления лайков: ", e);
+        }
+    };
 
-                const review = reviewDoc.data();
-                const replies = review.replies || [];
-                if (replyIndex >= replies.length) throw new Error("Ответ не найден");
+    window.toggleReplyLike = async function (reviewId, replyIndex) {
+        if (!userIP) {
+            alert('Не удалось определить IP.');
+            return;
+        }
 
-                let reply = replies[replyIndex];
-                let likes = reply.likes || 0;
-                let likedBy = reply.likedBy || [];
-                const hasLiked = likedBy.includes(userIP);
+        const reviewRef = doc(db, "reviews", reviewId);
+        try {
+            const reviewDoc = await getDoc(reviewRef);
+            if (!reviewDoc.exists()) throw new Error("Отзыв не найден");
 
-                if (hasLiked) {
-                    likes = Math.max(0, likes - 1);
-                    likedBy = likedBy.filter(ip => ip !== userIP);
-                    alert('Лайк с ответа убран.');
-                } else {
-                    likes += 1;
-                    likedBy.push(userIP);
-                    alert('Лайк на ответ добавлен!');
-                }
+            const review = reviewDoc.data();
+            const replies = review.replies || [];
+            if (replyIndex >= replies.length) throw new Error("Ответ не найден");
 
-                replies[replyIndex] = { ...reply, likes, likedBy };
-                await updateDoc(reviewRef, { replies });
-            } catch (e) {
-                console.error("Ошибка обновления лайков ответа: ", e);
+            let reply = replies[replyIndex];
+            let likes = reply.likes || 0;
+            let likedBy = reply.likedBy || [];
+            const hasLiked = likedBy.includes(userIP);
+
+            if (hasLiked) {
+                likes = Math.max(0, likes - 1);
+                likedBy = likedBy.filter(ip => ip !== userIP);
+                alert('Лайк с ответа убран.');
+            } else {
+                likes += 1;
+                likedBy.push(userIP);
+                alert('Лайк на ответ добавлен!');
             }
-        };
 
-        const reviewsList = document.getElementById('reviewsList');
-        const reviewCount = document.getElementById('reviewCount');
-        onSnapshot(collection(db, "reviews"), (snapshot) => {
-            reviewsList.innerHTML = '';
-            let count = 0;
+            replies[replyIndex] = { ...reply, likes, likedBy };
+            await updateDoc(reviewRef, { replies });
+        } catch (e) {
+            console.error("Ошибка обновления лайков ответа: ", e);
+        }
+    };
 
-            snapshot.forEach(doc => {
-                const review = doc.data();
-                const reviewId = doc.id;
-                const isLiked = userIP && review.likedBy?.includes(userIP);
-                const isRepliesExpanded = review.isRepliesExpanded || false;
-                const replies = review.replies || [];
+    const reviewsList = document.getElementById('reviewsList');
+    const reviewCount = document.getElementById('reviewCount');
+    onSnapshot(collection(db, "reviews"), (snapshot) => {
+        reviewsList.innerHTML = '';
+        let count = 0;
 
-                const reviewItem = document.createElement('div');
-                reviewItem.className = 'review-item';
-                reviewItem.setAttribute('data-id', reviewId);
+        snapshot.forEach(doc => {
+            const review = doc.data();
+            const reviewId = doc.id;
+            const isLiked = userIP && review.likedBy?.includes(userIP);
+            const isRepliesExpanded = review.isRepliesExpanded || false;
+            const replies = review.replies || [];
 
-                let html = `
-                    <img class="avatar" src="${review.photoURL || 'https://via.placeholder.com/32'}" alt="User Avatar">
-                    <div class="content">
-                        <div class="username">${review.username}</div>
-                        <p>${review.text}</p>
-                        <div class="timestamp">${new Date(review.timestamp).toLocaleString()}</div>
-                        <div class="like-section">
-                            <button class="like-button ${isLiked ? 'liked' : ''}" onclick="toggleLike('${reviewId}')">
-                                ${isLiked ? '❤️' : '🤍'}
-                            </button>
-                            <span class="like-count">${review.likes || 0}</span>
-                        </div>
-                        <button class="block-button" onclick="blockUser('${review.ip}', '${reviewId}')">Заблокировать IP</button>
-                        <button class="unblock-button" onclick="unblockUser('${review.ip}')">Разблокировать IP</button>
-                        <div class="reply-section">
-                            <div class="reply-form">
-                                <input type="text" id="reply-username-${reviewId}" placeholder="Ваше имя">
-                                <textarea id="reply-text-${reviewId}" placeholder="Ваш ответ..."></textarea>
-                                <button onclick="addReply('${reviewId}')">Ответить</button>
-                            </div>
+            const reviewItem = document.createElement('div');
+            reviewItem.className = 'review-item';
+            reviewItem.setAttribute('data-id', reviewId);
+
+            let html = `
+                <div class="username">${review.username}</div>
+                <p>${review.text}</p>
+                <div class="timestamp">${new Date(review.timestamp).toLocaleString()}</div>
+                <div class="like-section">
+                    <button class="like-button ${isLiked ? 'liked' : ''}" onclick="toggleLike('${reviewId}')">
+                        ${isLiked ? '❤️' : '🤍'}
+                    </button>
+                    <span class="like-count">${review.likes || 0}</span>
+                </div>
+                <button class="block-button" onclick="blockUser('${review.ip}', '${reviewId}')">Заблокировать IP</button>
+                <button class="unblock-button" onclick="unblockUser('${review.ip}')">Разблокировать IP</button>
+                <div class="reply-section">
+                    <div class="reply-form">
+                        <input type="text" id="reply-username-${reviewId}" placeholder="Ваше имя">
+                        <textarea id="reply-text-${reviewId}" placeholder="Ваш ответ..."></textarea>
+                        <button onclick="addReply('${reviewId}')">Ответить</button>
+                    </div>
+            `;
+
+            if (replies.length > 0) {
+                html += `
+                    <button class="toggle-replies" onclick="toggleReplies('${reviewId}', ${isRepliesExpanded})">
+                        ${isRepliesExpanded ? 'Свернуть ответы' : `Развернуть ответы (${replies.length})`}
+                    </button>
+                    <div class="replies-list" style="display: ${isRepliesExpanded ? 'block' : 'none'};">
                 `;
-
-                if (replies.length > 0) {
+                replies.forEach((reply, index) => {
+                    const isReplyLiked = userIP && reply.likedBy?.includes(userIP);
                     html += `
-                        <button class="toggle-replies" onclick="toggleReplies('${reviewId}', ${isRepliesExpanded})">
-                            ${isRepliesExpanded ? 'Свернуть ответы' : `Развернуть ответы (${replies.length})`}
-                        </button>
-                        <div class="replies-list" style="display: ${isRepliesExpanded ? 'block' : 'none'};">
-                    `;
-                    replies.forEach((reply, index) => {
-                        const isReplyLiked = userIP && reply.likedBy?.includes(userIP);
-                        html += `
-                            <div class="reply-item">
-                                <img class="avatar" src="${reply.photoURL || 'https://via.placeholder.com/32'}" alt="User Avatar">
-                                <div class="content">
-                                    <div class="username">${reply.username}</div>
-                                    <p>${reply.text}</p>
-                                    <div class="timestamp">${new Date(reply.timestamp).toLocaleString()}</div>
-                                    <div class="reply-like-section">
-                                        <button class="reply-like-button ${isReplyLiked ? 'liked' : ''}" onclick="toggleReplyLike('${reviewId}', ${index})">
-                                            ${isReplyLiked ? '❤️' : '🤍'}
-                                        </button>
-                                        <span class="reply-like-count">${reply.likes || 0}</span>
-                                    </div>
-                                </div>
+                        <div class="reply-item">
+                            <div class="username">${reply.username}</div>
+                            <p>${reply.text}</p>
+                            <div class="timestamp">${new Date(reply.timestamp).toLocaleString()}</div>
+                            <div class="reply-like-section">
+                                <button class="reply-like-button ${isReplyLiked ? 'liked' : ''}" onclick="toggleReplyLike('${reviewId}', ${index})">
+                                    ${isReplyLiked ? '❤️' : '🤍'}
+                                </button>
+                                <span class="reply-like-count">${reply.likes || 0}</span>
                             </div>
-                        `;
-                    });
-                    html += `</div>`;
-                }
-
-                html += `</div></div>`;
-                reviewItem.innerHTML = html;
-                reviewsList.appendChild(reviewItem);
-                count++;
-            });
-
-            reviewCount.textContent = `Всего отзывов: ${count}`;
-            if (isAdmin) {
-                showAdminControls();
-                hideUsernameInputs();
+                        </div>
+                    `;
+                });
+                html += `</div>`;
             }
-        }, (error) => {
-            console.error("Ошибка при получении данных с сервера: ", error);
-            reviewsList.innerHTML = '<p>Ошибка загрузки отзывов. Проверьте подключение или настройки Firebase.</p>';
+
+            html += `</div>`;
+            reviewItem.innerHTML = html;
+            reviewsList.appendChild(reviewItem);
+            count++;
         });
 
-        document.getElementById('searchInput').addEventListener('input', function (e) {
-            const searchText = e.target.value.toLowerCase();
-            const reviewItems = document.querySelectorAll('.review-item');
-            let visibleCount = 0;
+        reviewCount.textContent = `Всего отзывов: ${count}`;
+        if (isAdmin) {
+            showAdminControls();
+            hideUsernameInputs();
+        }
+    }, (error) => {
+        console.error("Ошибка при получении данных с сервера: ", error);
+        reviewsList.innerHTML = '<p>Ошибка загрузки отзывов. Проверьте подключение или настройки Firebase.</p>';
+    });
 
-            reviewItems.forEach(item => {
-                const username = item.querySelector('.username').textContent.toLowerCase();
-                const text = item.querySelector('p').textContent.toLowerCase();
-                const isVisible = username.includes(searchText) || text.includes(searchText);
-                item.style.display = isVisible ? 'block' : 'none';
-                if (isVisible) visibleCount++;
-            });
+    document.getElementById('searchInput').addEventListener('input', function (e) {
+        const searchText = e.target.value.toLowerCase();
+        const reviewItems = document.querySelectorAll('.review-item');
+        let visibleCount = 0;
 
-            reviewCount.textContent = `Всего отзывов: ${reviewItems.length} (показано: ${visibleCount})`;
+        reviewItems.forEach(item => {
+            const username = item.querySelector('.username').textContent.toLowerCase();
+            const text = item.querySelector('p').textContent.toLowerCase();
+            const isVisible = username.includes(searchText) || text.includes(searchText);
+            item.style.display = isVisible ? 'block' : 'none';
+            if (isVisible) visibleCount++;
         });
-    </script>
+
+        reviewCount.textContent = `Всего отзывов: ${reviewItems.length} (показано: ${visibleCount})`;
+    });
+</script>
+
 </body>
+
 </html>
+
