@@ -62,18 +62,15 @@
         .image-container {
             margin-bottom: 30px;
             perspective: 800px;
+            position: relative;
         }
 
         .image-container img {
             width: 300px;
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            transition: transform 0.5s ease;
+            transition: transform 0.3s ease;
             will-change: transform;
-        }
-
-        .image-container img:hover {
-            transform: rotateY(20deg) rotateX(20deg);
         }
 
         .sidebar-menu {
@@ -132,7 +129,6 @@
             transform: translateX(10px);
         }
 
-        /* Медиа-запросы для адаптации на телефон */
         @media (max-width: 768px) {
             .container {
                 width: 90%;
@@ -163,29 +159,6 @@
                 width: 200px;
             }
         }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: white;
-            margin: 20% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 300px;
-            text-align: center;
-        }
-        .close {
-            color: red;
-            font-size: 20px;
-            cursor: pointer;
-        }
     </style>
 </head>
 
@@ -212,6 +185,34 @@
             <a href="https://ktoto342245.github.io/nonentity/helping.html">О проекте</a>
             <a href="https://ktoto342245.github.io/2sait/">Цены</a>
         </div>
+    </div>
+
+    <script>
+        const imageContainer = document.querySelector('.image-container');
+        const img = imageContainer.querySelector('img');
+
+        imageContainer.addEventListener('mousemove', (e) => {
+            const rect = imageContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left; // Позиция X относительно контейнера
+            const y = e.clientY - rect.top;  // Позиция Y относительно контейнера
+
+            // Центр изображения
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            // Вычисляем угол поворота в зависимости от положения мыши
+            const rotateX = (centerY - y) / centerY * 20; // Макс. угол поворота по X: 20 градусов
+            const rotateY = (x - centerX) / centerX * 20; // Макс. угол поворота по Y: 20 градусов
+
+            // Применяем трансформацию
+            img.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        imageContainer.addEventListener('mouseleave', () => {
+            // Возвращаем изображение в исходное положение при уходе мыши
+            img.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        });
+    </script>
 </body>
 
 </html>
