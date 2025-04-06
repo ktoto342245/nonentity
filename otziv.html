@@ -438,8 +438,8 @@
         <div class="stats" id="statsSection"></div>
         <div class="review-form" id="reviewForm">
             <h2 id="reviewFormTitle">Оставьте свой отзыв</h2>
-            <input type="number" id="rating" min="1" max="5" placeholder="Оценка (1-5)" disabled>
-            <textarea id="reviewText" placeholder="Ваш отзыв..." disabled></textarea>
+            <input type="number" id="rating" min="1" max="5" placeholder="Оценка (1-5)" disabled title="Войдите в учётную запись, чтобы пользоваться комментариями">
+            <textarea id="reviewText" placeholder="Ваш отзыв..." disabled title="Войдите в учётную запись, чтобы пользоваться комментариями"></textarea>
             <button onclick="addReview()" disabled>Отправить</button>
         </div>
         <div class="sort-buttons" id="sortButtons">
@@ -500,7 +500,8 @@
                 toggleRepliesExpand: "Развернуть ответы ({count})",
                 toggleRepliesCollapse: "Свернуть ответы",
                 replyPlaceholder: "Ваш ответ...",
-                replyButton: "Ответить"
+                replyButton: "Ответить",
+                loginToComment: "Войдите в учётную запись, чтобы пользоваться комментариями"
             },
             uk: {
                 pageTitle: "Відгуки",
@@ -520,7 +521,8 @@
                 toggleRepliesExpand: "Розгорнути відповіді ({count})",
                 toggleRepliesCollapse: "Згорнути відповіді",
                 replyPlaceholder: "Ваша відповідь...",
-                replyButton: "Відповісти"
+                replyButton: "Відповісти",
+                loginToComment: "Увійдіть в обліковий запис, щоб користуватися коментарями"
             }
         };
 
@@ -548,12 +550,19 @@
         }
 
         function updateFormState() {
+            const t = translations[currentLanguage];
             const isAuthenticated = !!currentUser;
+            const loginMessage = t.loginToComment;
+
             document.getElementById('rating').disabled = !isAuthenticated;
+            document.getElementById('rating').title = isAuthenticated ? '' : loginMessage;
             document.getElementById('reviewText').disabled = !isAuthenticated;
+            document.getElementById('reviewText').title = isAuthenticated ? '' : loginMessage;
             document.querySelector('#reviewForm button').disabled = !isAuthenticated;
+
             document.querySelectorAll('.reply-form textarea').forEach(textarea => {
                 textarea.disabled = !isAuthenticated;
+                textarea.title = isAuthenticated ? '' : loginMessage;
             });
             document.querySelectorAll('.reply-form button').forEach(button => {
                 button.disabled = !isAuthenticated;
@@ -565,6 +574,7 @@
             currentLanguage = e.target.value;
             localStorage.setItem('language', currentLanguage);
             updateLanguage();
+            updateFormState();
         });
 
         async function getUserIP() {
@@ -947,7 +957,7 @@
                         <button class="unblock-button" onclick="unblockUser('${review.ip}')">Разблокировать IP</button>
                         <div class="reply-section">
                             <div class="reply-form">
-                                <textarea id="reply-text-${reviewId}" placeholder="${t.replyPlaceholder}" disabled></textarea>
+                                <textarea id="reply-text-${reviewId}" placeholder="${t.replyPlaceholder}" disabled title="${t.loginToComment}"></textarea>
                                 <button onclick="addReply('${reviewId}')" disabled>${t.replyButton}</button>
                             </div>
                 `;
