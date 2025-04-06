@@ -146,6 +146,16 @@
             background-color: #008bb0;
         }
 
+        .review-form button:disabled,
+        .reply-form button:disabled,
+        .review-form input:disabled,
+        .review-form textarea:disabled,
+        .reply-form textarea:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
         .sort-buttons {
             margin-bottom: 1rem;
             display: flex;
@@ -428,9 +438,9 @@
         <div class="stats" id="statsSection"></div>
         <div class="review-form" id="reviewForm">
             <h2 id="reviewFormTitle">Оставьте свой отзыв</h2>
-            <input type="number" id="rating" min="1" max="5" placeholder="Оценка (1-5)">
-            <textarea id="reviewText" placeholder="Ваш отзыв..."></textarea>
-            <button onclick="addReview()">Отправить</button>
+            <input type="number" id="rating" min="1" max="5" placeholder="Оценка (1-5)" disabled>
+            <textarea id="reviewText" placeholder="Ваш отзыв..." disabled></textarea>
+            <button onclick="addReview()" disabled>Отправить</button>
         </div>
         <div class="sort-buttons" id="sortButtons">
             <button id="sortPopular" onclick="sortReviews('popular')">Популярные отзывы</button>
@@ -537,6 +547,19 @@
             updateReviewsDisplay();
         }
 
+        function updateFormState() {
+            const isAuthenticated = !!currentUser;
+            document.getElementById('rating').disabled = !isAuthenticated;
+            document.getElementById('reviewText').disabled = !isAuthenticated;
+            document.querySelector('#reviewForm button').disabled = !isAuthenticated;
+            document.querySelectorAll('.reply-form textarea').forEach(textarea => {
+                textarea.disabled = !isAuthenticated;
+            });
+            document.querySelectorAll('.reply-form button').forEach(button => {
+                button.disabled = !isAuthenticated;
+            });
+        }
+
         document.getElementById('languageSelect').value = currentLanguage;
         document.getElementById('languageSelect').addEventListener('change', (e) => {
             currentLanguage = e.target.value;
@@ -587,6 +610,7 @@
                 `;
             }
             updateLanguage();
+            updateFormState();
         });
 
         async function loadAdminPassword() {
@@ -923,8 +947,8 @@
                         <button class="unblock-button" onclick="unblockUser('${review.ip}')">Разблокировать IP</button>
                         <div class="reply-section">
                             <div class="reply-form">
-                                <textarea id="reply-text-${reviewId}" placeholder="${t.replyPlaceholder}"></textarea>
-                                <button onclick="addReply('${reviewId}')">${t.replyButton}</button>
+                                <textarea id="reply-text-${reviewId}" placeholder="${t.replyPlaceholder}" disabled></textarea>
+                                <button onclick="addReply('${reviewId}')" disabled>${t.replyButton}</button>
                             </div>
                 `;
 
@@ -975,6 +999,7 @@
             if (isAdmin) {
                 showAdminControls();
             }
+            updateFormState();
         }
 
         onSnapshot(collection(db, "reviews"), (snapshot) => {
