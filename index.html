@@ -3,214 +3,538 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Услуги</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rexking — Сообщество будущего</title>
     <link rel="icon" type="image/x-icon" href="data:image/png;base64,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">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: white;
-            text-align: center;
-            padding: 0;
-            height: 100vh;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(145deg, #0b1126, #2a3d8f);
+            color: #ffffff;
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
             flex-direction: column;
-        }
-
-        .container {
-            text-align: center;
-            width: 80%;
-            max-width: 600px;
-            transition: all 0.3s ease;
-        }
-
-        h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-        }
-
-        p {
-            font-size: 1.2em;
-            margin-bottom: 40px;
-            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .button {
-            background-color: #00bfff;
-            color: white;
-            padding: 15px 40px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 18px;
-            border-radius: 30px;
-            margin: 15px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .button:hover {
-            background-color: #008bb0;
-            transform: scale(1.1);
-        }
-
-        .image-container {
-            margin-bottom: 30px;
-            perspective: 800px;
+            align-items: center;
+            overflow-x: hidden;
             position: relative;
         }
 
-        .image-container img {
-            width: 300px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease;
-            will-change: transform;
+        /* Интерактивный фон */
+        canvas#bgCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.7;
         }
 
-        .sidebar-menu {
+        header {
+            width: 100%;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(11, 17, 38, 0.85);
+            backdrop-filter: blur(15px);
             position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 250px;
-            background: linear-gradient(45deg, #ff6f61, #ff9f1c);
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            padding: 15px;
+            top: 0;
             z-index: 1000;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .menu-toggle {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 18px;
+        .logo {
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ffcc, #ff007a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: logoGlow 3s infinite ease-in-out;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(0, 255, 204, 0.3); }
+            50% { text-shadow: 0 0 20px rgba(0, 255, 204, 0.5); }
+        }
+
+        .nav-toggle {
+            display: none;
+            font-size: 2rem;
+            background: none;
+            border: none;
+            color: #ffffff;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: transform 0.3s ease, color 0.3s ease;
         }
 
-        .menu-toggle:hover {
-            background-color: rgba(255, 255, 255, 0.4);
+        .nav-toggle:hover {
+            color: #00ffcc;
+            transform: rotate(90deg);
         }
 
-        .menu-items {
-            margin-top: 10px;
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: opacity 0.3s ease, max-height 0.3s ease;
+        nav {
+            display: flex;
+            gap: 1.8rem;
         }
 
-        .sidebar-menu:hover .menu-items {
-            opacity: 1;
-            max-height: 200px;
-        }
-
-        .menu-items a {
-            display: block;
-            padding: 10px;
-            color: white;
+        nav a {
+            color: #ffffff;
             text-decoration: none;
-            font-size: 16px;
-            font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-            transition: background-color 0.3s, transform 0.3s;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            font-weight: 400;
+            padding: 0.7rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            background: linear-gradient(90deg, transparent, transparent);
         }
 
-        .menu-items a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateX(10px);
+        nav a:hover {
+            background: linear-gradient(90deg, #00ffcc, #ff007a);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
         }
 
+        nav a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #ff007a;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        nav a:hover::before {
+            width: 80%;
+        }
+
+        .main-container {
+            text-align: center;
+            width: 90%;
+            max-width: 1000px;
+            margin: 8rem auto 6rem;
+            padding: 3.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 25px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 15px 60px rgba(0, 0, 0, 0.4);
+            z-index: 1;
+            animation: fadeIn 1.5s ease-out;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: clamp(3rem, 7vw, 4.5rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ffcc, #ff007a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.8rem;
+            line-height: 1.2;
+            text-shadow: 0 3px 15px rgba(0, 0, 0, 0.4);
+            animation: textGlow 3s infinite ease-in-out;
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(0, 255, 204, 0.3); }
+            50% { text-shadow: 0 0 20px rgba(0, 255, 204, 0.5); }
+        }
+
+        p {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            font-weight: 300;
+            margin-bottom: 3rem;
+            color: #d0d0d0;
+            line-height: 1.8;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeIn 1.8s ease-out 0.3s forwards;
+        }
+
+        .hero-image {
+            margin: 3rem auto;
+            width: clamp(300px, 60vw, 500px);
+            max-width: 100%;
+            border-radius: 25px;
+            box-shadow: 0 20px 70px rgba(0, 0, 0, 0.5);
+            transition: transform 0.6s ease, box-shadow 0.6s ease;
+            border: 3px solid rgba(0, 255, 204, 0.2);
+            animation: imageFloat 4s infinite ease-in-out;
+        }
+
+        @keyframes imageFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero-image:hover {
+            transform: scale(1.1) translateY(-10px);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .button {
+            background: linear-gradient(90deg, #00ffcc, #ff007a);
+            color: #ffffff;
+            padding: clamp(1rem, 2.5vw, 1.3rem) clamp(3rem, 7vw, 5rem);
+            text-decoration: none;
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            font-weight: 600;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            width: fit-content;
+            max-width: 400px;
+            text-align: center;
+            animation: buttonPulse 2.5s infinite ease-in-out;
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); }
+        }
+
+        .button:hover {
+            background: linear-gradient(90deg, #ff007a, #00ffcc);
+            transform: translateY(-6px) scale(1.08);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+            animation: none;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .button:hover::before {
+            left: 100%;
+        }
+
+        footer {
+            width: 100%;
+            padding: 2.5rem;
+            text-align: center;
+            background: rgba(11, 17, 38, 0.85);
+            backdrop-filter: blur(15px);
+            color: #d0d0d0;
+            font-size: clamp(1rem, 2vw, 1.1rem);
+            margin-top: 4rem;
+            box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        footer a {
+            color: #00ffcc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #ff007a;
+        }
+
+        /* Адаптивность */
         @media (max-width: 768px) {
-            .container {
-                width: 90%;
-                max-width: 400px;
-                transform: translateX(-10px) scale(0.9);
+            header {
+                padding: 1.2rem 2rem;
+            }
+
+            .logo {
+                font-size: clamp(1.6rem, 4.5vw, 2rem);
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            nav {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: rgba(11, 17, 38, 0.9);
+                padding: 2rem;
+                border-radius: 0 0 20px 20px;
+                box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            nav a {
+                font-size: clamp(1rem, 2vw, 1.1rem);
+                padding: 1.2rem;
+            }
+
+            .main-container {
+                width: 95%;
+                margin: 7rem auto 5rem;
+                padding: 2.5rem;
             }
 
             h1 {
-                font-size: 2.2em;
+                font-size: clamp(2.5rem, 6vw, 3.5rem);
             }
 
             p {
-                font-size: 1em;
+                font-size: clamp(1rem, 2vw, 1.2rem);
+            }
+
+            .hero-image {
+                width: clamp(250px, 50vw, 400px);
             }
 
             .button {
-                padding: 12px 30px;
-                font-size: 16px;
+                padding: clamp(0.9rem, 2vw, 1.1rem) clamp(2.5rem, 6vw, 4rem);
+                font-size: clamp(1rem, 2vw, 1.2rem);
+                max-width: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 1rem 1.5rem;
             }
 
-            .image-container img {
-                width: 220px;
+            .main-container {
+                width: 98%;
+                padding: 2rem;
+                margin: 6rem auto 4rem;
             }
 
-            .sidebar-menu {
-                left: 10px;
-                top: 10px;
-                width: 200px;
+            h1 {
+                font-size: clamp(2rem, 5vw, 3rem);
+            }
+
+            p {
+                font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+            }
+
+            .hero-image {
+                width: clamp(200px, 45vw, 350px);
+            }
+
+            .button {
+                padding: clamp(0.8rem, 1.5vw, 1rem) clamp(2rem, 5vw, 3rem);
+                font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+                width: 100%;
+                max-width: 300px;
+            }
+
+            footer {
+                padding: 2rem;
+                font-size: clamp(0.9rem, 1.8vw, 1rem);
+            }
+        }
+
+        @media (max-width: 360px) {
+            header {
+                padding: 0.8rem 1rem;
+            }
+
+            .main-container {
+                width: 100%;
+                padding: 1.5rem;
+                margin: 5rem auto 3rem;
+            }
+
+            h1 {
+                font-size: clamp(1.8rem, 4.5vw, 2.5rem);
+            }
+
+            p {
+                font-size: clamp(0.8rem, 1.5vw, 1rem);
+            }
+
+            .hero-image {
+                width: clamp(150px, 40vw, 300px);
+            }
+
+            .button {
+                padding: clamp(0.7rem, 1.2vw, 0.9rem) clamp(1.5rem, 4vw, 2rem);
+                font-size: clamp(0.8rem, 1.5vw, 1rem);
+                max-width: 250px;
+            }
+
+            footer {
+                padding: 1.5rem;
+                font-size: clamp(0.8rem, 1.5vw, 0.9rem);
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="image-container">
-            <img src="https://cdn.pixabay.com/animation/2025/01/31/15/41/15-41-51-373_512.gif" alt="3D изображение Telegram">
-        </div>
-
-        <h1>Добро пожаловать на наш сайт Rexking!</h1>
-        <p>Выберите, куда хотите зайти:</p>
-        <a href="https://t.me/+gMUfch4a2bU5ZDVi" class="button" target="_blank">Перейти в TGK (инфа)</a>
-        <br>
-        <a href="https://discord.gg/x2U3AxuxvG" class="button" target="_blank">ДС-сервер (инфа)</a>
-        <br>
-        <a href="https://ktoto342245.github.io/nonentity/otziv.html" class="button" target="_blank">Отзывы</a>
-    </div>
-        
-    <div class="sidebar-menu">
-        <div class="menu-toggle">Меню</div>
-        <div class="menu-items">
+    <canvas id="bgCanvas"></canvas>
+    <header>
+        <div class="logo">Rexking</div>
+        <button class="nav-toggle">☰</button>
+        <nav>
             <a href="https://ktoto342245.github.io/nonentity/texpodderska" target="_blank">Техподдержка</a>
             <a href="https://t.me/Helpmepls53" target="_blank">Связаться с создателем</a>
             <a href="https://ktoto342245.github.io/nonentity/helping.html">О проекте</a>
             <a href="https://ktoto342245.github.io/2sait/">Цены</a>
+            <a href="https://ktoto342245.github.io/nonentity/otziv.html" target="_blank">Отзывы</a>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <img src="https://cdn.pixabay.com/animation/2025/01/31/15/41/15-41-51-373_512.gif" alt="3D изображение Telegram" class="hero-image">
+        <h1>Добро пожаловать в Rexking!</h1>
+        <p>Присоединяйтесь к нашему сообществу, где технологии и идеи создают будущее!</p>
+        <div class="button-container">
+            <a href="https://t.me/+gMUfch4a2bU5ZDVi" class="button" target="_blank">Перейти в Telegram</a>
+            <a href="https://discord.gg/x2U3AxuxvG" class="button" target="_blank">Discord-сервер</a>
         </div>
-    </div>
+    </main>
+
+    <footer>
+        © 2025 <a href="https://t.me/Helpmepls53" target="_blank">Rexking</a>. Создано с ✨ для будущего.
+    </footer>
 
     <script>
-        const imageContainer = document.querySelector('.image-container');
-        const img = imageContainer.querySelector('img');
+        // Интерактивный фон с частицами
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
 
-        imageContainer.addEventListener('mousemove', (e) => {
-            const rect = imageContainer.getBoundingClientRect();
-            const x = e.clientX - rect.left; // Позиция X относительно контейнера
-            const y = e.clientY - rect.top;  // Позиция Y относительно контейнера
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-            // Центр изображения
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
+        const particlesArray = [];
+        const numberOfParticles = 100;
 
-            // Вычисляем угол поворота в зависимости от положения мыши
-            const rotateX = (centerY - y) / centerY * 20; // Макс. угол поворота по X: 20 градусов
-            const rotateY = (x - centerX) / centerX * 20; // Макс. угол поворота по Y: 20 градусов
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 5 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.5 + 0.3;
+            }
 
-            // Применяем трансформацию
-            img.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.size > 0.2) this.size -= 0.01;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(0, 255, 204, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+
+                // Создание связей между частицами
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 255, 204, ${0.2 - distance / 500})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+
+                if (particlesArray[i].size <= 0.2) {
+                    particlesArray.splice(i, 1);
+                    i--;
+                    particlesArray.push(new Particle());
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         });
 
-        imageContainer.addEventListener('mouseleave', () => {
-            // Возвращаем изображение в исходное положение при уходе мыши
-            img.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        // Навигация
+        const navToggle = document.querySelector('.nav-toggle');
+        const nav = document.querySelector('nav');
+
+        navToggle.addEventListener('click', () => {
+            nav.classList.toggle('active');
+        });
+
+        nav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                nav.classList.remove('active');
+            });
+        });
+
+        // Плавный скролл
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
         });
     </script>
 </body>
