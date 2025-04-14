@@ -16,7 +16,6 @@
 
         body {
             font-family: 'Rajdhani', sans-serif;
-            /* Заменил Outfit на Rajdhani для консистентности */
             background: linear-gradient(145deg, #0b1126, #2a3d8f);
             color: #ffffff;
             min-height: 100vh;
@@ -26,10 +25,8 @@
             overflow-x: hidden;
             position: relative;
             cursor: none;
-            /* Скрываем стандартный курсор */
         }
 
-        /* Интерактивный фон */
         canvas#bgCanvas {
             position: absolute;
             top: 0;
@@ -40,7 +37,6 @@
             opacity: 0.7;
         }
 
-        /* Кастомный курсор */
         .cursor {
             width: 20px;
             height: 20px;
@@ -61,6 +57,43 @@
             pointer-events: none;
             z-index: 9998;
             opacity: 0.6;
+        }
+
+        @media (hover: none) {
+            .cursor,
+            .cursor-trail {
+                display: none;
+            }
+            body {
+                cursor: default;
+            }
+        }
+
+        .spark {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(45deg, #ff3399, #00ffff);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: spark 0.8s ease-out forwards;
+            transform-origin: center;
+        }
+
+        @keyframes spark {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+                box-shadow: 0 0 15px #ff3399,
+                           0 0 25px #00ffff,
+                           0 0 35px rgba(255, 51, 255, 0.6);
+            }
+            100% {
+                transform: scale(3) rotate(120deg);
+                opacity: 0;
+                box-shadow: none;
+            }
         }
 
         header {
@@ -90,12 +123,10 @@
         }
 
         @keyframes logoGlow {
-
             0%,
             100% {
                 text-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
             }
-
             50% {
                 text-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
             }
@@ -175,7 +206,6 @@
                 opacity: 0;
                 transform: translateY(50px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -196,12 +226,10 @@
         }
 
         @keyframes textGlow {
-
             0%,
             100% {
                 text-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
             }
-
             50% {
                 text-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
             }
@@ -231,12 +259,10 @@
         }
 
         @keyframes imageFloat {
-
             0%,
             100% {
                 transform: translateY(0);
             }
-
             50% {
                 transform: translateY(-10px);
             }
@@ -273,13 +299,11 @@
         }
 
         @keyframes buttonPulse {
-
             0%,
             100% {
                 transform: scale(1);
                 box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
             }
-
             50% {
                 transform: scale(1.03);
                 box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
@@ -330,7 +354,6 @@
             color: #ff007a;
         }
 
-        /* Адаптивность */
         @media (max-width: 768px) {
             header {
                 padding: 1.2rem 2rem;
@@ -466,9 +489,9 @@
 
 <body>
     <canvas id="bgCanvas"></canvas>
-    <!-- Кастомный курсор -->
     <div class="cursor"></div>
     <div class="cursor-trail"></div>
+    <div class="spark-container"></div>
 
     <header>
         <div class="logo">Rexking</div>
@@ -498,7 +521,7 @@
     </footer>
 
     <script>
-        // Интерактивный фон с частицами
+        // Interactive background with particles
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
 
@@ -548,7 +571,6 @@
                 particlesArray[i].update();
                 particlesArray[i].draw();
 
-                // Создание связей между частицами
                 for (let j = i; j < particlesArray.length; j++) {
                     const dx = particlesArray[i].x - particlesArray[j].x;
                     const dy = particlesArray[i].y - particlesArray[j].y;
@@ -581,7 +603,7 @@
             canvas.height = window.innerHeight;
         });
 
-        // Навигация
+        // Navigation
         const navToggle = document.querySelector('.nav-toggle');
         const nav = document.querySelector('nav');
 
@@ -595,7 +617,7 @@
             });
         });
 
-        // Плавный скролл
+        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -605,16 +627,58 @@
             });
         });
 
-        // Кастомный курсор
+        // Custom cursor and spark effect
         const cursor = document.querySelector('.cursor');
         const trail = document.querySelector('.cursor-trail');
+        const sparkContainer = document.querySelector('.spark-container');
+        const isTouchDevice = window.matchMedia("(hover: none)").matches;
+        let lastSparkTime = 0;
 
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            trail.style.left = e.clientX - 4 + 'px';
-            trail.style.top = e.clientY - 4 + 'px';
-        });
+        if (!isTouchDevice) {
+            // PC: Custom cursor
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                trail.style.left = e.clientX - 4 + 'px';
+                trail.style.top = e.clientY - 4 + 'px';
+            });
+        } else {
+            // Mobile: Balanced spark effect on touch
+            document.addEventListener('touchstart', createSpark);
+            document.addEventListener('touchmove', createSpark);
+
+            function createSpark(e) {
+                const now = Date.now();
+                if (now - lastSparkTime < 100) return; // Ограничение частоты
+                lastSparkTime = now;
+
+                e.preventDefault();
+                const touch = e.touches[0];
+                const x = touch.clientX;
+                const y = touch.clientY;
+
+                // Создаём 2–3 искры
+                const sparkCount = Math.floor(Math.random() * 2) + 2;
+                for (let i = 0; i < sparkCount; i++) {
+                    const spark = document.createElement('div');
+                    spark.classList.add('spark');
+                    spark.style.left = `${x}px`;
+                    spark.style.top = `${y}px`;
+
+                    // Случайное смещение
+                    const angle = Math.random() * 360;
+                    const distance = Math.random() * 15 + 5;
+                    spark.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
+                    spark.style.animationDelay = `${Math.random() * 0.1}s`;
+
+                    sparkContainer.appendChild(spark);
+
+                    setTimeout(() => {
+                        spark.remove();
+                    }, 800); // Соответствует длительности анимации
+                }
+            }
+        }
     </script>
 </body>
 
