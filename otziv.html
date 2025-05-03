@@ -900,625 +900,633 @@
         <div class="reviews-list" id="reviewsList"></div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+    [⚠️ Suspicious Content] <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAxp9yWxNndxvbJ_OpogAkDWjdqpOWuGbg",
-            authDomain: "sait-4c17b.firebaseapp.com",
-            projectId: "sait-4c17b",
-            storageBucket: "sait-4c17b.firebasestorage.app",
-            messagingSenderId: "839932702171",
-            appId: "1:839932702171:web:81c83b75faba16f90b4bfe",
-            measurementId: "G-28M72NML99"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyAxp9yWxNndxvbJ_OpogAkDWjdqpOWuGbg",
+        authDomain: "sait-4c17b.firebaseapp.com",
+        projectId: "sait-4c17b",
+        storageBucket: "sait-4c17b.firebasestorage.app",
+        messagingSenderId: "839932702171",
+        appId: "1:839932702171:web:81c83b75faba16f90b4bfe",
+        measurementId: "G-28M72NML99"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const analytics = getAnalytics(app);
-        const provider = new GoogleAuthProvider();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const analytics = getAnalytics(app);
+    const provider = new GoogleAuthProvider();
 
-        let userIP = null;
-        let isAdmin = false;
-        let ADMIN_PASSWORD = null;
-        let currentUser = null;
-        let reviewsData = [];
-        let currentSort = 'newest';
+    let userIP = null;
+    let isAdmin = false;
+    let ADMIN_PASSWORD = null;
+    let currentUser = null;
+    let reviewsData = [];
+    let currentSort = 'newest';
 
-        const translations = {
-            ru: {
-                pageTitle: "Отзывы",
-                reviewFormTitle: "Оставьте свой отзыв",
-                searchPlaceholder: "Поиск отзывов...",
-                loginButton: "Войти",
-                logoutButton: "Выйти",
-                reviewTextPlaceholder: "Ваш отзыв...",
-                ratingPlaceholder: "Оценка (1-5)",
-                submitButton: "Отправить",
-                sortPopular: "Популярные отзывы",
-                sortOldest: "Старые отзывы",
-                sortNewest: "Новые отзывы",
-                sortCurrent: "На данное время отзывы",
-                reviewCount: "Всего отзывов: {count}",
-                stats: "Всего отзывов: {count}, Средний рейтинг: {average}",
-                toggleRepliesExpand: "Развернуть ответы ({count})",
-                toggleRepliesCollapse: "Свернуть ответы",
-                replyPlaceholder: "Ваш ответ...",
-                replyButton: "Ответить",
-                loginToComment: "Войдите в учётную запись, чтобы пользоваться комментариями"
-            },
-            uk: {
-                pageTitle: "Відгуки",
-                reviewFormTitle: "Залиште свій відгук",
-                searchPlaceholder: "Пошук відгуків...",
-                loginButton: "Увійти",
-                logoutButton: "Вийти",
-                reviewTextPlaceholder: "Ваш відгук...",
-                ratingPlaceholder: "Оцінка (1-5)",
-                submitButton: "Надіслати",
-                sortPopular: "Популярні відгуки",
-                sortOldest: "Старі відгуки",
-                sortNewest: "Нові відгуки",
-                sortCurrent: "На даний час відгуки",
-                reviewCount: "Всього відгуків: {count}",
-                stats: "Всього відгуків: {count}, Середній рейтинг: {average}",
-                toggleRepliesExpand: "Розгорнути відповіді ({count})",
-                toggleRepliesCollapse: "Згорнути відповіді",
-                replyPlaceholder: "Ваша відповідь...",
-                replyButton: "Відповісти",
-                loginToComment: "Увійдіть в обліковий запис, щоб користуватися коментарями"
-            }
-        };
-
-        let currentLanguage = localStorage.getItem('language') || 'ru';
-
-        function updateLanguage() {
-            const t = translations[currentLanguage];
-            document.getElementById('pageTitle').textContent = t.pageTitle;
-            document.getElementById('reviewFormTitle').textContent = t.reviewFormTitle;
-            document.getElementById('searchInput').placeholder = t.searchPlaceholder;
-            document.getElementById('reviewText').placeholder = t.reviewTextPlaceholder;
-            document.getElementById('rating').placeholder = t.ratingPlaceholder;
-            document.getElementById('loginButton').textContent = currentUser ? t.logoutButton : t.loginButton;
-            document.querySelector('#sortPopular').textContent = t.sortPopular;
-            document.querySelector('#sortOldest').textContent = t.sortOldest;
-            document.querySelector('#sortNewest').textContent = t.sortNewest;
-            document.querySelector('#sortCurrent').textContent = t.sortCurrent;
-            document.querySelectorAll('.reply-form textarea').forEach(textarea => {
-                textarea.placeholder = t.replyPlaceholder;
-            });
-            document.querySelectorAll('.reply-form button').forEach(button => {
-                button.textContent = t.replyButton;
-            });
-            updateReviewsDisplay();
+    const translations = {
+        ru: {
+            pageTitle: "Отзывы",
+            reviewFormTitle: "Оставьте свой отзыв",
+            searchPlaceholder: "Поиск отзывов...",
+            loginButton: "Войти",
+            logoutButton: "Выйти",
+            reviewTextPlaceholder: "Ваш отзыв...",
+            ratingPlaceholder: "Оценка (1-5)",
+            submitButton: "Отправить",
+            sortPopular: "Популярные отзывы",
+            sortOldest: "Старые отзывы",
+            sortNewest: "Новые отзывы",
+            sortCurrent: "На данное время отзывы",
+            reviewCount: "Всего отзывов: {count}",
+            stats: "Всего отзывов: {count}, Средний рейтинг: {average}",
+            toggleRepliesExpand: "Развернуть ответы ({count})",
+            toggleRepliesCollapse: "Свернуть ответы",
+            replyPlaceholder: "Ваш ответ...",
+            replyButton: "Ответить",
+            loginToComment: "Войдите в учётную запись, чтобы пользоваться комментариями"
+        },
+        uk: {
+            pageTitle: "Відгуки",
+            reviewFormTitle: "Залиште свій відгук",
+            searchPlaceholder: "Пошук відгуків...",
+            loginButton: "Увійти",
+            logoutButton: "Вийти",
+            reviewTextPlaceholder: "Ваш відгук...",
+            ratingPlaceholder: "Оцінка (1-5)",
+            submitButton: "Надіслати",
+            sortPopular: "Популярні відгуки",
+            sortOldest: "Старі відгуки",
+            sortNewest: "Нові відгуки",
+            sortCurrent: "На даний час відгуки",
+            reviewCount: "Всього відгуків: {count}",
+            stats: "Всього відгуків: {count}, Середній рейтинг: {average}",
+            toggleRepliesExpand: "Розгорнути відповіді ({count})",
+            toggleRepliesCollapse: "Згорнути відповіді",
+            replyPlaceholder: "Ваша відповідь...",
+            replyButton: "Відповісти",
+            loginToComment: "Увійдіть в обліковий запис, щоб користуватися коментарями"
         }
+    };
 
-        function updateFormState() {
-            const t = translations[currentLanguage];
-            const isAuthenticated = !!currentUser;
-            const loginMessage = t.loginToComment;
+    let currentLanguage = localStorage.getItem('language') || 'ru';
 
-            document.getElementById('rating').disabled = !isAuthenticated;
-            document.getElementById('rating').title = isAuthenticated ? '' : loginMessage;
-            document.getElementById('reviewText').disabled = !isAuthenticated;
-            document.getElementById('reviewText').title = isAuthenticated ? '' : loginMessage;
-            document.querySelector('#reviewForm button').disabled = !isAuthenticated;
-
-            document.querySelectorAll('.reply-form textarea').forEach(textarea => {
-                textarea.disabled = !isAuthenticated;
-                textarea.title = isAuthenticated ? '' : loginMessage;
-            });
-            document.querySelectorAll('.reply-form button').forEach(button => {
-                button.disabled = !isAuthenticated;
-            });
-        }
-
-        document.getElementById('languageSelect').value = currentLanguage;
-        document.getElementById('languageSelect').addEventListener('change', (e) => {
-            currentLanguage = e.target.value;
-            localStorage.setItem('language', currentLanguage);
-            updateLanguage();
-            updateFormState();
+    function updateLanguage() {
+        const t = translations[currentLanguage];
+        document.getElementById('pageTitle').textContent = t.pageTitle;
+        document.getElementById('reviewFormTitle').textContent = t.reviewFormTitle;
+        document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+        document.getElementById('reviewText').placeholder = t.reviewTextPlaceholder;
+        document.getElementById('rating').placeholder = t.ratingPlaceholder;
+        document.getElementById('loginButton').textContent = currentUser ? t.logoutButton : t.loginButton;
+        document.querySelector('#sortPopular').textContent = t.sortPopular;
+        document.querySelector('#sortOldest').textContent = t.sortOldest;
+        document.querySelector('#sortNewest').textContent = t.sortNewest;
+        document.querySelector('#sortCurrent').textContent = t.sortCurrent;
+        document.querySelectorAll('.reply-form textarea').forEach(textarea => {
+            textarea.placeholder = t.replyPlaceholder;
         });
-
-        async function getUserIP() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                userIP = data.ip;
-                console.log("IP пользователя:", userIP);
-            } catch (e) {
-                console.error("Ошибка при получении IP: ", e);
-                userIP = 'unknown';
-            }
-        }
-
-        window.signInWithGoogle = async function () {
-            try {
-                if (currentUser) {
-                    await signOut(auth);
-                    logEvent(analytics, 'logout', { userId: currentUser.uid });
-                    console.log("Пользователь вышел из системы");
-                } else {
-                    const result = await signInWithPopup(auth, provider);
-                    currentUser = result.user;
-                    logEvent(analytics, 'login', { userId: currentUser.uid, method: 'Google' });
-                    console.log("Пользователь вошёл:", currentUser.displayName);
-                }
-            } catch (e) {
-                console.error("Ошибка авторизации: ", e);
-                alert("Ошибка авторизации: " + e.message);
-            }
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            const userSection = document.getElementById('userSection');
-            const t = translations[currentLanguage];
-            if (user) {
-                userSection.innerHTML = `
-                    <img src="${user.photoURL || 'https://via.placeholder.com/32'}" alt="User Avatar">
-                    <span>${user.displayName}</span>
-                    <button id="loginButton" onclick="signInWithGoogle()">${t.logoutButton}</button>
-                `;
-                console.log("Состояние авторизации: пользователь авторизован", user.displayName);
-            } else {
-                userSection.innerHTML = `
-                    <button id="loginButton" onclick="signInWithGoogle()">${t.loginButton}</button>
-                `;
-                console.log("Состояние авторизации: пользователь не авторизован");
-            }
-            updateLanguage();
-            updateFormState();
+        document.querySelectorAll('.reply-form button').forEach(button => {
+            button.textContent = t.replyButton;
         });
+        updateReviewsDisplay();
+    }
 
-        async function loadAdminPassword() {
-            try {
-                const adminDocRef = doc(db, "adminConfig", "settings");
-                const adminDoc = await getDoc(adminDocRef);
-                if (adminDoc.exists()) {
-                    ADMIN_PASSWORD = adminDoc.data().adminPassword;
-                    console.log("Пароль администратора успешно загружен");
-                } else {
-                    console.error("Документ с паролем не найден!");
-                    alert("Ошибка: Пароль администратора не настроен.");
-                }
-            } catch (e) {
-                console.error("Ошибка при загрузке пароля: ", e);
-                alert("Ошибка загрузки настроек администратора: " + e.message);
-            }
+    function updateFormState() {
+        const t = translations[currentLanguage];
+        const isAuthenticated = !!currentUser;
+        const loginMessage = t.loginToComment;
+
+        document.getElementById('rating').disabled = !isAuthenticated;
+        document.getElementById('rating').title = isAuthenticated ? '' : loginMessage;
+        document.getElementById('reviewText').disabled = !isAuthenticated;
+        document.getElementById('reviewText').title = isAuthenticated ? '' : loginMessage;
+        document.querySelector('#reviewForm button').disabled = !isAuthenticated;
+
+        document.querySelectorAll('.reply-form textarea').forEach(textarea => {
+            textarea.disabled = !isAuthenticated;
+            textarea.title = isAuthenticated ? '' : loginMessage;
+        });
+        document.querySelectorAll('.reply-form button').forEach(button => {
+            button.disabled = !isAuthenticated;
+        });
+    }
+
+    document.getElementById('languageSelect').value = currentLanguage;
+    document.getElementById('languageSelect').addEventListener('change', (e) => {
+        currentLanguage = e.target.value;
+        localStorage.setItem('language', currentLanguage);
+        updateLanguage();
+        updateFormState();
+    });
+
+    async function getUserIP() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            userIP = data.ip;
+            console.log("IP пользователя:", userIP);
+        } catch (e) {
+            console.error("Ошибка при получении IP: ", e);
+            userIP = 'unknown';
         }
+    }
 
-        loadAdminPassword();
-        getUserIP();
-
-        window.promptAdminPassword = async function () {
-            if (ADMIN_PASSWORD === null) {
-                alert("Пароль администратора ещё не загружен. Попробуйте позже.");
-                return;
-            }
-            const password = prompt("Введите пароль администратора:");
-            if (password === ADMIN_PASSWORD) {
-                isAdmin = true;
-                alert("Вы вошли как администратор!");
-                showAdminControls();
-                console.log("Администратор вошёл в систему");
+    window.signInWithGoogle = async function () {
+        try {
+            if (currentUser) {
+                await signOut(auth);
+                logEvent(analytics, 'logout', { userId: currentUser.uid });
+                console.log("Пользователь вышел из системы");
             } else {
-                alert("Неверный пароль!");
-                console.log("Неверный пароль администратора");
+                const result = await signInWithPopup(auth, provider);
+                currentUser = result.user;
+                logEvent(analytics, 'login', { userId: currentUser.uid, method: 'Google' });
+                console.log("Пользователь вошёл:", currentUser.displayName);
             }
-        };
+        } catch (e) {
+            console.error("Ошибка авторизации: ", e);
+            alert("Ошибка авторизации: " + e.message);
+        }
+    };
 
-        function showAdminControls() {
-            document.querySelectorAll('.block-button').forEach(btn => btn.style.display = 'inline-block');
-            document.querySelectorAll('.unblock-button').forEach(btn => btn.style.display = 'inline-block');
-            console.log("Админские кнопки отображены");
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        const userSection = document.getElementById('userSection');
+        const t = translations[currentLanguage];
+        if (user) {
+            userSection.innerHTML = `
+                <img src="${user.photoURL || 'https://via.placeholder.com/32'}" alt="User Avatar">
+                <span>${user.displayName}</span>
+                <button id="loginButton" onclick="signInWithGoogle()">${t.logoutButton}</button>
+            `;
+            console.log("Состояние авторизации: пользователь авторизован", user.displayName);
+            // Загружаем пароль администратора после авторизации
+            loadAdminPassword();
+        } else {
+            userSection.innerHTML = `
+                <button id="loginButton" onclick="signInWithGoogle()">${t.loginButton}</button>
+            `;
+            console.log("Состояние авторизации: пользователь не авторизован");
+            // Сбрасываем ADMIN_PASSWORD и isAdmin, если пользователь не авторизован
+            ADMIN_PASSWORD = null;
+            isAdmin = false;
+        }
+        updateLanguage();
+        updateFormState();
+    });
+
+    async function loadAdminPassword() {
+        try {
+            const adminDocRef = doc(db, "adminConfig", "settings");
+            const adminDoc = await getDoc(adminDocRef);
+            if (adminDoc.exists()) {
+                ADMIN_PASSWORD = adminDoc.data().adminPassword;
+                console.log("Пароль администратора успешно загружен");
+            } else {
+                console.error("Документ с паролем не найден!");
+                alert("Ошибка: Пароль администратора не настроен.");
+            }
+        } catch (e) {
+            console.error("Ошибка при загрузке пароля: ", e);
+            alert("Ошибка загрузки настроек администратора: " + e.message);
+        }
+    }
+
+    getUserIP();
+
+    window.promptAdminPassword = async function () {
+        if (!currentUser) {
+            alert("Пожалуйста, войдите, чтобы получить доступ к функциям администратора.");
+            return;
+        }
+        if (ADMIN_PASSWORD === null) {
+            alert("Пароль администратора ещё не загружен. Попробуйте позже.");
+            return;
+        }
+        const password = prompt("Введите пароль администратора:");
+        if (password === ADMIN_PASSWORD) {
+            isAdmin = true;
+            alert("Вы вошли как администратор!");
+            showAdminControls();
+            console.log("Администратор вошёл в систему");
+        } else {
+            alert("Неверный пароль!");
+            console.log("Неверный пароль администратора");
+        }
+    };
+
+    function showAdminControls() {
+        document.querySelectorAll('.block-button').forEach(btn => btn.style.display = 'inline-block');
+        document.querySelectorAll('.unblock-button').forEach(btn => btn.style.display = 'inline-block');
+        console.log("Админские кнопки отображены");
+    }
+
+    async function isIPBlocked(ip) {
+        const blockRef = doc(db, "blockedIPs", ip);
+        try {
+            const blockDoc = await getDoc(blockRef);
+            const blocked = blockDoc.exists();
+            console.log(`Проверка IP ${ip} на блокировку: ${blocked}`);
+            return blocked;
+        } catch (e) {
+            console.error("Ошибка проверки IP на блокировку: ", e);
+            return false;
+        }
+    }
+
+    async function hasIPReviewed(ip) {
+        const ipRef = doc(db, "reviewedIPs", ip);
+        try {
+            const ipDoc = await getDoc(ipRef);
+            const reviewed = ipDoc.exists();
+            console.log(`Проверка IP ${ip} на наличие отзыва: ${reviewed}`);
+            return reviewed;
+        } catch (e) {
+            console.error("Ошибка проверки IP на отзыв: ", e);
+            return false;
+        }
+    }
+
+    window.blockUser = async function (ip, reviewId) {
+        if (!isAdmin) {
+            alert("Только администратор может блокировать пользователей!");
+            return;
+        }
+        try {
+            await setDoc(doc(db, "blockedIPs", ip), {
+                blockedAt: new Date().toISOString(),
+                reviewId: reviewId
+            });
+            alert(`IP ${ip} заблокирован!`);
+            console.log(`IP ${ip} заблокирован для отзыва ${reviewId}`);
+        } catch (e) {
+            console.error("Ошибка блокировки IP: ", e);
+            alert("Ошибка блокировки IP: " + e.message);
+        }
+    };
+
+    window.unblockUser = async function (ip) {
+        if (!isAdmin) {
+            alert("Только администратор может разблокировать пользователей!");
+            return;
+        }
+        try {
+            await deleteDoc(doc(db, "blockedIPs", ip));
+            alert(`IP ${ip} разблокирован!`);
+            console.log(`IP ${ip} разблокирован`);
+        } catch (e) {
+            console.error("Ошибка разблокировки IP: ", e);
+            alert("Ошибка разблокировки IP: " + e.message);
+        }
+    };
+
+    window.addReview = async function () {
+        if (!currentUser) {
+            alert("Пожалуйста, войдите, чтобы оставить отзыв!");
+            return;
         }
 
-        async function isIPBlocked(ip) {
-            const blockRef = doc(db, "blockedIPs", ip);
-            try {
-                const blockDoc = await getDoc(blockRef);
-                const blocked = blockDoc.exists();
-                console.log(`Проверка IP ${ip} на блокировку: ${blocked}`);
-                return blocked;
-            } catch (e) {
-                console.error("Ошибка проверки IP на блокировку: ", e);
-                return false;
-            }
+        const reviewText = document.getElementById('reviewText').value.trim();
+        const rating = parseInt(document.getElementById('rating').value);
+
+        if (!reviewText) {
+            alert('Заполните поле отзыва!');
+            return;
         }
 
-        async function hasIPReviewed(ip) {
-            const ipRef = doc(db, "reviewedIPs", ip);
-            try {
-                const ipDoc = await getDoc(ipRef);
-                const reviewed = ipDoc.exists();
-                console.log(`Проверка IP ${ip} на наличие отзыва: ${reviewed}`);
-                return reviewed;
-            } catch (e) {
-                console.error("Ошибка проверки IP на отзыв: ", e);
-                return false;
-            }
+        if (!rating || rating < 1 || rating > 5) {
+            alert('Пожалуйста, выберите оценку от 1 до 5!');
+            return;
         }
 
-        window.blockUser = async function (ip, reviewId) {
-            if (!isAdmin) {
-                alert("Только администратор может блокировать пользователей!");
-                return;
-            }
-            try {
-                await setDoc(doc(db, "blockedIPs", ip), {
-                    blockedAt: new Date().toISOString(),
-                    reviewId: reviewId
-                });
-                alert(`IP ${ip} заблокирован!`);
-                console.log(`IP ${ip} заблокирован для отзыва ${reviewId}`);
-            } catch (e) {
-                console.error("Ошибка блокировки IP: ", e);
-                alert("Ошибка блокировки IP: " + e.message);
-            }
-        };
+        if (!userIP) {
+            alert('Не удалось определить IP. Попробуйте снова.');
+            return;
+        }
 
-        window.unblockUser = async function (ip) {
-            if (!isAdmin) {
-                alert("Только администратор может разблокировать пользователей!");
-                return;
-            }
-            try {
-                await deleteDoc(doc(db, "blockedIPs", ip));
-                alert(`IP ${ip} разблокирован!`);
-                console.log(`IP ${ip} разблокирован`);
-            } catch (e) {
-                console.error("Ошибка разблокировки IP: ", e);
-                alert("Ошибка разблокировки IP: " + e.message);
-            }
-        };
+        if (await isIPBlocked(userIP)) {
+            alert('Ваш IP заблокирован!');
+            return;
+        }
 
-        window.addReview = async function () {
-            if (!currentUser) {
-                alert("Пожалуйста, войдите, чтобы оставить отзыв!");
-                return;
-            }
+        if (await hasIPReviewed(userIP)) {
+            alert('Вы уже оставили отзыв!');
+            return;
+        }
 
-            const reviewText = document.getElementById('reviewText').value.trim();
-            const rating = parseInt(document.getElementById('rating').value);
+        try {
+            const reviewDoc = await addDoc(collection(db, "reviews"), {
+                username: currentUser.displayName,
+                userId: currentUser.uid,
+                photoURL: currentUser.photoURL || 'https://via.placeholder.com/32',
+                text: reviewText,
+                rating: rating,
+                timestamp: new Date().toISOString(),
+                likes: 0,
+                likedBy: [],
+                replies: [],
+                isRepliesExpanded: false,
+                ip: userIP
+            });
 
-            if (!reviewText) {
-                alert('Заполните поле отзыва!');
-                return;
-            }
+            await setDoc(doc(db, "reviewedIPs", userIP), {
+                reviewId: reviewDoc.id,
+                timestamp: new Date().toISOString()
+            });
 
-            if (!rating || rating < 1 || rating > 5) {
-                alert('Пожалуйста, выберите оценку от 1 до 5!');
-                return;
-            }
+            document.getElementById('reviewText').value = '';
+            document.getElementById('rating').value = '';
+            alert('Отзыв добавлен!');
+            console.log(`Отзыв добавлен: ${reviewDoc.id}`);
+            logEvent(analytics, 'add_review', { userId: currentUser.uid, reviewId: reviewDoc.id });
+        } catch (e) {
+            console.error("Ошибка добавления отзыва: ", e);
+            alert("Ошибка добавления отзыва: " + e.message);
+        }
+    };
 
-            if (!userIP) {
-                alert('Не удалось определить IP. Попробуйте снова.');
-                return;
-            }
+    window.addReply = async function (reviewId) {
+        if (!currentUser) {
+            alert("Пожалуйста, войдите, чтобы оставить ответ!");
+            return;
+        }
 
-            if (await isIPBlocked(userIP)) {
-                alert('Ваш IP заблокирован!');
-                return;
-            }
+        const replyText = document.getElementById(`reply-text-${reviewId}`).value.trim();
 
-            if (await hasIPReviewed(userIP)) {
-                alert('Вы уже оставили отзыв!');
-                return;
-            }
+        if (!replyText) {
+            alert('Заполните поле ответа!');
+            return;
+        }
 
-            try {
-                const reviewDoc = await addDoc(collection(db, "reviews"), {
-                    username: currentUser.displayName,
-                    userId: currentUser.uid,
-                    photoURL: currentUser.photoURL || 'https://via.placeholder.com/32',
-                    text: reviewText,
-                    rating: rating,
-                    timestamp: new Date().toISOString(),
-                    likes: 0,
-                    likedBy: [],
-                    replies: [],
-                    isRepliesExpanded: false,
-                    ip: userIP
-                });
+        if (!userIP) {
+            alert('Не удалось определить IP. Попробуйте снова.');
+            return;
+        }
 
-                await setDoc(doc(db, "reviewedIPs", userIP), {
-                    reviewId: reviewDoc.id,
-                    timestamp: new Date().toISOString()
-                });
+        if (await isIPBlocked(userIP)) {
+            alert('Ваш IP заблокирован!');
+            return;
+        }
 
-                document.getElementById('reviewText').value = '';
-                document.getElementById('rating').value = '';
-                alert('Отзыв добавлен!');
-                console.log(`Отзыв добавлен: ${reviewDoc.id}`);
-                logEvent(analytics, 'add_review', { userId: currentUser.uid, reviewId: reviewDoc.id });
-            } catch (e) {
-                console.error("Ошибка добавления отзыва: ", e);
-                alert("Ошибка добавления отзыва: " + e.message);
-            }
-        };
+        const reviewRef = doc(db, "reviews", reviewId);
+        try {
+            const reviewDoc = await getDoc(reviewRef);
+            if (!reviewDoc.exists()) throw new Error("Отзыв не найден");
 
-        window.addReply = async function (reviewId) {
-            if (!currentUser) {
-                alert("Пожалуйста, войдите, чтобы оставить ответ!");
-                return;
-            }
+            const review = reviewDoc.data();
+            const replies = review.replies || [];
+            replies.push({
+                username: currentUser.displayName,
+                userId: currentUser.uid,
+                photoURL: currentUser.photoURL || 'https://via.placeholder.com/32',
+                text: replyText,
+                timestamp: new Date().toISOString(),
+                ip: userIP,
+                likes: 0,
+                likedBy: []
+            });
 
-            const replyText = document.getElementById(`reply-text-${reviewId}`).value.trim();
+            await updateDoc(reviewRef, { replies, isRepliesExpanded: true });
+            document.getElementById(`reply-text-${reviewId}`).value = '';
+            alert('Ответ добавлен!');
+            console.log(`Ответ добавлен к отзыву ${reviewId}`);
+            logEvent(analytics, 'add_reply', { userId: currentUser.uid, reviewId: reviewId });
+        } catch (e) {
+            console.error("Ошибка добавления ответа: ", e);
+            alert("Ошибка добавления ответа: " + e.message);
+        }
+    };
 
-            if (!replyText) {
-                alert('Заполните поле ответа!');
-                return;
-            }
+    window.toggleReplies = async function (reviewId, isExpanded) {
+        try {
+            await updateDoc(doc(db, "reviews", reviewId), {
+                isRepliesExpanded: !isExpanded
+            });
+            console.log(`Состояние ответов для отзыва ${reviewId} изменено: ${!isExpanded}`);
+        } catch (e) {
+            console.error("Ошибка переключения ответов: ", e);
+            alert("Ошибка переключения ответов: " + e.message);
+        }
+    };
 
-            if (!userIP) {
-                alert('Не удалось определить IP. Попробуйте снова.');
-                return;
-            }
+    window.toggleLike = async function (reviewId) {
+        if (!userIP) {
+            alert('Не удалось определить IP.');
+            return;
+        }
 
-            if (await isIPBlocked(userIP)) {
-                alert('Ваш IP заблокирован!');
-                return;
-            }
+        const reviewRef = doc(db, "reviews", reviewId);
+        try {
+            const reviewDoc = await getDoc(reviewRef);
+            if (!reviewDoc.exists()) throw new Error("Отзыв не найден");
 
-            const reviewRef = doc(db, "reviews", reviewId);
-            try {
-                const reviewDoc = await getDoc(reviewRef);
-                if (!reviewDoc.exists()) throw new Error("Отзыв не найден");
+            const review = reviewDoc.data();
+            let likes = review.likes || 0;
+            let likedBy = review.likedBy || [];
+            const hasLiked = likedBy.includes(userIP);
 
-                const review = reviewDoc.data();
-                const replies = review.replies || [];
-                replies.push({
-                    username: currentUser.displayName,
-                    userId: currentUser.uid,
-                    photoURL: currentUser.photoURL || 'https://via.placeholder.com/32',
-                    text: replyText,
-                    timestamp: new Date().toISOString(),
-                    ip: userIP,
-                    likes: 0,
-                    likedBy: []
-                });
-
-                await updateDoc(reviewRef, { replies, isRepliesExpanded: true });
-                document.getElementById(`reply-text-${reviewId}`).value = '';
-                alert('Ответ добавлен!');
-                console.log(`Ответ добавлен к отзыву ${reviewId}`);
-                logEvent(analytics, 'add_reply', { userId: currentUser.uid, reviewId: reviewId });
-            } catch (e) {
-                console.error("Ошибка добавления ответа: ", e);
-                alert("Ошибка добавления ответа: " + e.message);
-            }
-        };
-
-        window.toggleReplies = async function (reviewId, isExpanded) {
-            try {
-                await updateDoc(doc(db, "reviews", reviewId), {
-                    isRepliesExpanded: !isExpanded
-                });
-                console.log(`Состояние ответов для отзыва ${reviewId} изменено: ${!isExpanded}`);
-            } catch (e) {
-                console.error("Ошибка переключения ответов: ", e);
-                alert("Ошибка переключения ответов: " + e.message);
-            }
-        };
-
-        window.toggleLike = async function (reviewId) {
-            if (!userIP) {
-                alert('Не удалось определить IP.');
-                return;
+            if (hasLiked) {
+                likes = Math.max(0, likes - 1);
+                likedBy = likedBy.filter(ip => ip !== userIP);
+                alert('Лайк убран.');
+                console.log(`Лайк убран для отзыва ${reviewId}`);
+            } else {
+                likes += 1;
+                likedBy.push(userIP);
+                alert('Лайк добавлен!');
+                console.log(`Лайк добавлен для отзыва ${reviewId}`);
             }
 
-            const reviewRef = doc(db, "reviews", reviewId);
-            try {
-                const reviewDoc = await getDoc(reviewRef);
-                if (!reviewDoc.exists()) throw new Error("Отзыв не найден");
+            await updateDoc(reviewRef, { likes, likedBy });
+            logEvent(analytics, hasLiked ? 'unlike_review' : 'like_review', { userId: currentUser?.uid, reviewId: reviewId });
+        } catch (e) {
+            console.error("Ошибка обновления лайков: ", e);
+            alert("Ошибка обновления лайков: " + e.message);
+        }
+    };
 
-                const review = reviewDoc.data();
-                let likes = review.likes || 0;
-                let likedBy = review.likedBy || [];
-                const hasLiked = likedBy.includes(userIP);
+    window.toggleReplyLike = async function (reviewId, replyIndex) {
+        if (!userIP) {
+            alert('Не удалось определить IP.');
+            return;
+        }
 
-                if (hasLiked) {
-                    likes = Math.max(0, likes - 1);
-                    likedBy = likedBy.filter(ip => ip !== userIP);
-                    alert('Лайк убран.');
-                    console.log(`Лайк убран для отзыва ${reviewId}`);
-                } else {
-                    likes += 1;
-                    likedBy.push(userIP);
-                    alert('Лайк добавлен!');
-                    console.log(`Лайк добавлен для отзыва ${reviewId}`);
-                }
+        const reviewRef = doc(db, "reviews", reviewId);
+        try {
+            const reviewDoc = await getDoc(reviewRef);
+            if (!reviewDoc.exists()) throw new Error("Отзыв не найден");
 
-                await updateDoc(reviewRef, { likes, likedBy });
-                logEvent(analytics, hasLiked ? 'unlike_review' : 'like_review', { userId: currentUser?.uid, reviewId: reviewId });
-            } catch (e) {
-                console.error("Ошибка обновления лайков: ", e);
-                alert("Ошибка обновления лайков: " + e.message);
-            }
-        };
+            const review = reviewDoc.data();
+            const replies = review.replies || [];
+            if (replyIndex >= replies.length) throw new Error("Ответ не найден");
 
-        window.toggleReplyLike = async function (reviewId, replyIndex) {
-            if (!userIP) {
-                alert('Не удалось определить IP.');
-                return;
-            }
+            let reply = replies[replyIndex];
+            let likes = reply.likes || 0;
+            let likedBy = reply.likedBy || [];
+            const hasLiked = likedBy.includes(userIP);
 
-            const reviewRef = doc(db, "reviews", reviewId);
-            try {
-                const reviewDoc = await getDoc(reviewRef);
-                if (!reviewDoc.exists()) throw new Error("Отзыв не найден");
-
-                const review = reviewDoc.data();
-                const replies = review.replies || [];
-                if (replyIndex >= replies.length) throw new Error("Ответ не найден");
-
-                let reply = replies[replyIndex];
-                let likes = reply.likes || 0;
-                let likedBy = reply.likedBy || [];
-                const hasLiked = likedBy.includes(userIP);
-
-                if (hasLiked) {
-                    likes = Math.max(0, likes - 1);
-                    likedBy = likedBy.filter(ip => ip !== userIP);
-                    alert('Лайк с ответа убран.');
-                    console.log(`Лайк убран с ответа ${replyIndex} в отзыве ${reviewId}`);
-                } else {
-                    likes += 1;
-                    likedBy.push(userIP);
-                    alert('Лайк на ответ добавлен!');
-                    console.log(`Лайк добавлен на ответ ${replyIndex} в отзыве ${reviewId}`);
-                }
-
-                replies[replyIndex] = { ...reply, likes, likedBy };
-                await updateDoc(reviewRef, { replies });
-                logEvent(analytics, hasLiked ? 'unlike_reply' : 'like_reply', { userId: currentUser?.uid, reviewId: reviewId, replyIndex: replyIndex });
-            } catch (e) {
-                console.error("Ошибка обновления лайков ответа: ", e);
-                alert("Ошибка обновления лайков ответа: " + e.message);
-            }
-        };
-
-        window.sortReviews = function (sortType) {
-            currentSort = sortType;
-            document.querySelectorAll('.sort-buttons button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`sort${sortType.charAt(0).toUpperCase() + sortType.slice(1)}`).classList.add('active');
-            updateReviewsDisplay();
-            console.log(`Сортировка изменена на: ${sortType}`);
-            logEvent(analytics, 'sort_reviews', { sortType: sortType });
-        };
-
-        function updateReviewsDisplay() {
-            const reviewsList = document.getElementById('reviewsList');
-            reviewsList.innerHTML = '';
-            const t = translations[currentLanguage];
-
-            let sortedReviews = [...reviewsData];
-            if (currentSort === 'popular') {
-                sortedReviews.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-            } else if (currentSort === 'oldest') {
-                sortedReviews.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-            } else if (currentSort === 'newest') {
-                sortedReviews.sort((a, b) => new Date(b.timestamp) - new Date(b.timestamp));
-            } else if (currentSort === 'current') {
-                const now = new Date();
-                sortedReviews.sort((a, b) => Math.abs(new Date(b.timestamp) - now) - Math.abs(new Date(a.timestamp) - now));
+            if (hasLiked) {
+                likes = Math.max(0, likes - 1);
+                likedBy = likedBy.filter(ip => ip !== userIP);
+                alert('Лайк с ответа убран.');
+                console.log(`Лайк убран с ответа ${replyIndex} в отзыве ${reviewId}`);
+            } else {
+                likes += 1;
+                likedBy.push(userIP);
+                alert('Лайк на ответ добавлен!');
+                console.log(`Лайк добавлен на ответ ${replyIndex} в отзыве ${reviewId}`);
             }
 
-            const searchText = document.getElementById('searchInput').value.toLowerCase();
-            let visibleCount = 0;
+            replies[replyIndex] = { ...reply, likes, likedBy };
+            await updateDoc(reviewRef, { replies });
+            logEvent(analytics, hasLiked ? 'unlike_reply' : 'like_reply', { userId: currentUser?.uid, reviewId: reviewId, replyIndex: replyIndex });
+        } catch (e) {
+            console.error("Ошибка обновления лайков ответа: ", e);
+            alert("Ошибка обновления лайков ответа: " + e.message);
+        }
+    };
 
-            sortedReviews.forEach(review => {
-                const reviewId = review.id;
-                const isLiked = userIP && review.likedBy?.includes(userIP);
-                const isRepliesExpanded = review.isRepliesExpanded || false;
-                const replies = review.replies || [];
+    window.sortReviews = function (sortType) {
+        currentSort = sortType;
+        document.querySelectorAll('.sort-buttons button').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`sort${sortType.charAt(0).toUpperCase() + sortType.slice(1)}`).classList.add('active');
+        updateReviewsDisplay();
+        console.log(`Сортировка изменена на: ${sortType}`);
+        logEvent(analytics, 'sort_reviews', { sortType: sortType });
+    };
 
-                const username = review.username || 'Аноним';
-                const text = review.text || '';
-                const isVisible = username.toLowerCase().includes(searchText) || text.toLowerCase().includes(searchText);
+    function updateReviewsDisplay() {
+        const reviewsList = document.getElementById('reviewsList');
+        reviewsList.innerHTML = '';
+        const t = translations[currentLanguage];
 
-                if (!isVisible) return;
+        let sortedReviews = [...reviewsData];
+        if (currentSort === 'popular') {
+            sortedReviews.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+        } else if (currentSort === 'oldest') {
+            sortedReviews.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        } else if (currentSort === 'newest') {
+            sortedReviews.sort((a, b) => new Date(b.timestamp) - new Date(b.timestamp));
+        } else if (currentSort === 'current') {
+            const now = new Date();
+            sortedReviews.sort((a, b) => Math.abs(new Date(b.timestamp) - now) - Math.abs(new Date(a.timestamp) - now));
+        }
 
-                const reviewItem = document.createElement('div');
-                reviewItem.className = 'review-item';
-                reviewItem.setAttribute('data-id', reviewId);
+        const searchText = document.getElementById('searchInput').value.toLowerCase();
+        let visibleCount = 0;
 
-                let html = `
-                    <img class="avatar" src="${review.photoURL || 'https://via.placeholder.com/32'}" alt="User Avatar">
-                    <div class="content">
-                        <div class="username">${username}</div>
-                        <div class="rating">${'★'.repeat(review.rating || 0)}${'☆'.repeat(5 - (review.rating || 0))}</div>
-                        <p>${text}</p>
-                        <div class="timestamp">${new Date(review.timestamp).toLocaleString()}</div>
-                        <div class="like-section">
-                            <button class="like-button ${isLiked ? 'liked' : ''}" onclick="toggleLike('${reviewId}')">
-                                ${isLiked ? '❤️' : '🤍'}
-                            </button>
-                            <span class="like-count">${review.likes || 0}</span>
-                        </div>
-                        <button class="block-button" onclick="blockUser('${review.ip}', '${reviewId}')">Заблокировать IP</button>
-                        <button class="unblock-button" onclick="unblockUser('${review.ip}')">Разблокировать IP</button>
-                        <div class="reply-section">
-                            <div class="reply-form">
-                                <textarea id="reply-text-${reviewId}" placeholder="${t.replyPlaceholder}" disabled title="${t.loginToComment}"></textarea>
-                                <button onclick="addReply('${reviewId}')" disabled>${t.replyButton}</button>
-                            </div>
-                `;
+        sortedReviews.forEach(review => {
+            const reviewId = review.id;
+            const isLiked = userIP && review.likedBy?.includes(userIP);
+            const isRepliesExpanded = review.isRepliesExpanded || false;
+            const replies = review.replies || [];
 
-                if (replies.length > 0) {
-                    html += `
-                        <button class="toggle-replies" onclick="toggleReplies('${reviewId}', ${isRepliesExpanded})">
-                            ${isRepliesExpanded ? t.toggleRepliesCollapse : t.toggleRepliesExpand.replace('{count}', replies.length)}
+            const username = review.username || 'Аноним';
+            const text = review.text || '';
+            const isVisible = username.toLowerCase().includes(searchText) || text.toLowerCase().includes(searchText);
+
+            if (!isVisible) return;
+
+            const reviewItem = document.createElement('div');
+            reviewItem.className = 'review-item';
+            reviewItem.setAttribute('data-id', reviewId);
+
+            let html = `
+                <img class="avatar" src="${review.photoURL || 'https://via.placeholder.com/32'}" alt="User Avatar">
+                <div class="content">
+                    <div class="username">${username}</div>
+                    <div class="rating">${'★'.repeat(review.rating || 0)}${'☆'.repeat(5 - (review.rating || 0))}</div>
+                    <p>${text}</p>
+                    <div class="timestamp">${new Date(review.timestamp).toLocaleString()}</div>
+                    <div class="like-section">
+                        <button class="like-button ${isLiked ? 'liked' : ''}" onclick="toggleLike('${reviewId}')">
+                            ${isLiked ? '❤️' : '🤍'}
                         </button>
-                        <div class="replies-list" style="display: ${isRepliesExpanded ? 'block' : 'none'};">
-                    `;
-                    replies.forEach((reply, index) => {
-                        const isReplyLiked = userIP && reply.likedBy?.includes(userIP);
-                        html += `
-                            <div class="reply-item">
-                                <img class="avatar" src="${reply.photoURL || 'https://via.placeholder.com/32'}" alt="User Avatar">
-                                <div class="content">
-                                    <div class="username">${reply.username}</div>
-                                    <p>${reply.text}</p>
-                                    <div class="timestamp">${new Date(reply.timestamp).toLocaleString()}</div>
-                                    <div class="reply-like-section">
-                                        <button class="reply-like-button ${isReplyLiked ? 'liked' : ''}" onclick="toggleReplyLike('${reviewId}', ${index})">
-                                            ${isReplyLiked ? '❤️' : '🤍'}
-                                        </button>
-                                        <span class="reply-like-count">${reply.likes || 0}</span>
-                                    </div>
+                        <span class="like-count">${review.likes || 0}</span>
+                    </div>
+                    <button class="block-button" onclick="blockUser('${review.ip}', '${reviewId}')">Заблокировать IP</button>
+                    <button class="unblock-button" onclick="unblockUser('${review.ip}')">Разблокировать IP</button>
+                    <div class="reply-section">
+                        <div class="reply-form">
+                            <textarea id="reply-text-${reviewId}" placeholder="${t.replyPlaceholder}" disabled title="${t.loginToComment}"></textarea>
+                            <button onclick="addReply('${reviewId}')" disabled>${t.replyButton}</button>
+                        </div>
+            `;
+
+            if (replies.length > 0) {
+                html += `
+                    <button class="toggle-replies" onclick="toggleReplies('${reviewId}', ${isRepliesExpanded})">
+                        ${isRepliesExpanded ? t.toggleRepliesCollapse : t.toggleRepliesExpand.replace('{count}', replies.length)}
+                    </button>
+                    <div class="replies-list" style="display: ${isRepliesExpanded ? 'block' : 'none'};">
+                `;
+                replies.forEach((reply, index) => {
+                    const isReplyLiked = userIP && reply.likedBy?.includes(userIP);
+                    html += `
+                        <div class="reply-item">
+                            <img class="avatar" src="${reply.photoURL || 'https://via.placeholder.com/32'}" alt="User Avatar">
+                            <div class="content">
+                                <div class="username">${reply.username}</div>
+                                <p>${reply.text}</p>
+                                <div class="timestamp">${new Date(reply.timestamp).toLocaleString()}</div>
+                                <div class="reply-like-section">
+                                    <button class="reply-like-button ${isReplyLiked ? 'liked' : ''}" onclick="toggleReplyLike('${reviewId}', ${index})">
+                                        ${isReplyLiked ? '❤️' : '🤍'}
+                                    </button>
+                                    <span class="reply-like-count">${reply.likes || 0}</span>
                                 </div>
                             </div>
-                        `;
-                    });
-                    html += `</div>`;
-                }
-
-                html += `</div></div>`;
-                reviewItem.innerHTML = html;
-                reviewsList.appendChild(reviewItem);
-                visibleCount++;
-            });
-
-            const totalCount = reviewsData.length;
-            document.getElementById('reviewCount').textContent = t.reviewCount.replace('{count}', `${totalCount} (показано: ${visibleCount})`);
-
-            const totalRating = reviewsData.reduce((sum, review) => sum + (review.rating || 0), 0);
-            const averageRating = totalCount > 0 ? (totalRating / totalCount).toFixed(1) : 0;
-            document.getElementById('statsSection').textContent = t.stats
-                .replace('{count}', totalCount)
-                .replace('{average}', averageRating);
-
-            if (isAdmin) {
-                showAdminControls();
+                        </div>
+                    `;
+                });
+                html += `</div>`;
             }
-            updateFormState();
-        }
 
-        onSnapshot(collection(db, "reviews"), (snapshot) => {
-            console.log("Данные успешно получены из Firestore");
-            reviewsData = [];
-            snapshot.forEach(doc => {
-                reviewsData.push({ id: doc.id, ...doc.data() });
-            });
-            updateReviewsDisplay();
-        }, (error) => {
-            console.error("Ошибка при получении данных с сервера: ", error);
-            console.log("Код ошибки:", error.code);
-            console.log("Сообщение ошибки:", error.message);
-            document.getElementById('reviewsList').innerHTML = `<p>Ошибка загрузки отзывов: ${error.message}. Проверьте подключение или настройки Firebase.</p>`;
+            html += `</div></div>`;
+            reviewItem.innerHTML = html;
+            reviewsList.appendChild(reviewItem);
+            visibleCount++;
         });
 
-        document.getElementById('searchInput').addEventListener('input', updateReviewsDisplay);
+        const totalCount = reviewsData.length;
+        document.getElementById('reviewCount').textContent = t.reviewCount.replace('{count}', `${totalCount} (показано: ${visibleCount})`);
 
-        updateLanguage();
-        sortReviews('newest');
-    </script>
+        const totalRating = reviewsData.reduce((sum, review) => sum + (review.rating || 0), 0);
+        const averageRating = totalCount > 0 ? (totalRating / totalCount).toFixed(1) : 0;
+        document.getElementById('statsSection').textContent = t.stats
+            .replace('{count}', totalCount)
+            .replace('{average}', averageRating);
+
+        if (isAdmin) {
+            showAdminControls();
+        }
+        updateFormState();
+    }
+
+    onSnapshot(collection(db, "reviews"), (snapshot) => {
+        console.log("Данные успешно получены из Firestore");
+        reviewsData = [];
+        snapshot.forEach(doc => {
+            reviewsData.push({ id: doc.id, ...doc.data() });
+        });
+        updateReviewsDisplay();
+    }, (error) => {
+        console.error("Ошибка при получении данных с сервера: ", error);
+        console.log("Код ошибки:", error.code);
+        console.log("Сообщение ошибки:", error.message);
+        document.getElementById('reviewsList').innerHTML = `<p>Ошибка загрузки отзывов: ${error.message}. Проверьте подключение или настройки Firebase.</p>`;
+    });
+
+    document.getElementById('searchInput').addEventListener('input', updateReviewsDisplay);
+
+    updateLanguage();
+    sortReviews('newest');
+</script>
 </body>
 </html>
