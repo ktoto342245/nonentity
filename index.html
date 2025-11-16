@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Веб-розробник | Портфоліо</title>
+    <link rel="stylesheet" href="style.css">
+	<link rel="icon" type="image/x-icon" class="programmer-icon" href="emege.png">
+<body>
+    <div class="particles" id="particles"></div>
+
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo" data-lang-key="title">WebDev</a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html" data-lang-key="nav_home">Головна</a></li>
+                <li><a href="tex.html" data-lang-key="nav_skills">Навички</a></li>
+                <li><a href="robota.html" data-lang-key="nav_projects">Проєкти</a></li>
+                <li><a href="chena_and_usluga.html" data-lang-key="nav_prices">Ціни</a></li>
+                <li><a href="svaz.html" data-lang-key="nav_contacts">Контакти</a></li>
+            </ul>
+			<div class="lang-switcher">
+                <button class="lang-current-btn" aria-haspopup="true">
+                    <span class="lang-current-text">UA</span>
+                    <svg class="lang-arrow" width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 1L5 5L9 1" stroke="#a0a0a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" role="menu">
+                    <button data-lang="uk" class="lang-btn" role="menuitem">UA (Українська)</button>
+                    <button data-lang="en" class="lang-btn" role="menuitem">EN (English)</button>
+                    <button data-lang="ru" class="lang-btn" role="menuitem">RU (Русский)</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1 data-lang-key="hero_h1">Веб-розробник</h1>
+            <p data-lang-key="hero_p">Створюю сучасні та функціональні веб-рішення</p>
+            <a href="robota.html" class="cta-button" data-lang-key="hero_cta">Переглянути роботи</a>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title" data-lang-key="about_title">Про мене</h2>
+            <div class="about-content">
+                <p data-lang-key="about_p1">Привіт! Я веб-розробник з досвідом створення сучасних веб-додатків, Telegram ботів та плагінів. Спеціалізуюсь на розробці як frontend, так і backend частин проєктів.</p>
+                <p data-lang-key="about_p2">Працюю з новітніми технологіями та завжди слідкую за трендами у веб-розробці. Кожен проєкт для мене - це можливість створити щось особливе та корисне.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: rgba(255, 255, 255, 0.02);">
+        <div class="container">
+            <h2 class="section-title" data-lang-key="why_me_title">Чому обирають мене</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon">⚡</div>
+                    <h3 data-lang-key="why_me_card1_h3">Швидка розробка</h3>
+                    <p data-lang-key="why_me_card1_p">Дотримуюсь термінів та швидко реагую на зміни</p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🎯</div>
+                    <h3 data-lang-key="why_me_card2_h3">Якість коду</h3>
+                    <p data-lang-key="why_me_card2_p">Чистий, зрозумілий та оптимізований код</p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">💬</div>
+                    <h3 data-lang-key="why_me_card3_h3">Підтримка</h3>
+                    <p data-lang-key="why_me_card3_p">Допомога навіть після завершення проєкту</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p data-lang-key="footer_copy">&copy; 2025 WebDev. Всі права захищені.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
