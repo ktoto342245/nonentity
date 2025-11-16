@@ -1,0 +1,168 @@
+ <!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корпоративний веб-сайт | WebDev</title>
+    <link rel="stylesheet" href="../style.css">
+	<link rel="icon" type="image/x-icon" class="programmer-icon" href="emege.png">
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo" data-lang-key="title">WebDev</a>
+            <ul class="nav-links">
+                <li><a href="index.html" data-lang-key="nav_home">Головна</a></li>
+                <li><a href="tex.html" data-lang-key="nav_skills">Навички</a></li>
+                <li><a href="robota.html" data-lang-key="nav_projects">Проєкти</a></li>
+                <li><a href="chena_and_usluga.html" data-lang-key="nav_prices">Ціни</a></li>
+                <li><a href="svaz.html" data-lang-key="nav_contacts">Контакти</a></li>
+            </ul>
+            <div class="lang-switcher">
+                <button class="lang-current-btn" aria-haspopup="true">
+                    <span class="lang-current-text">UA</span>
+                    <svg class="lang-arrow" width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 1L5 5L9 1" stroke="#a0a0a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="lang-dropdown" role="menu">
+                    <button data-lang="uk" class="lang-btn" role="menuitem">UA (Українська)</button>
+                    <button data-lang="en" class="lang-btn" role="menuitem">EN (English)</button>
+                    <button data-lang="ru" class="lang-btn" role="menuitem">RU (Русский)</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="project-detail">
+        <div class="container">
+            <a href="../robota.html" class="back-button" data-lang-key="project_back_button">← Назад до проєктів</a>
+            
+            <div class="project-header">
+                <h1 data-lang-key="title_project_corp">Корпоративний веб-сайт</h1>
+                <p style="font-size: 1.2rem; color: #a0a0a0;" data-lang-key="project_corp_subtitle">Сучасний багатосторінковий сайт з CMS</p>
+            </div>
+
+            <div class="project-gallery">
+                <div class="gallery-container">
+                    <!-- ЗАМІСТЬ path/to/your/imageX.jpg ВСТАВТЕ ШЛЯХИ ДО ВАШИХ ФОТОК -->
+                    <img src="../prodjeckt/veb (1).png" alt="Скріншот 1" class="gallery-image active">
+                    <img src="../prodjeckt/veb (2).png" alt="Скріншот 2" class="gallery-image">
+                    
+                    <button class="gallery-nav prev">‹</button>
+                    <button class="gallery-nav next">›</button>
+                    
+                    <div class="gallery-counter">
+                        <span class="current-slide">1</span> / <span class="total-slides">2</span>
+                    </div>
+                    
+                    <div class="gallery-indicators">
+                        <div class="indicator active" data-slide="0"></div>
+                        <div class="indicator" data-slide="1"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-description">
+                <h2 data-lang-key="project_about_h2">Про проєкт</h2>
+                <p data-lang-key="project_corp_about_p1">Створив повноцінний корпоративний веб-сайт з сучасним дизайном, зручною адмін-панеллю та системою управління контентом, оптимізований для пошукових систем та повністю адаптований під всі пристрої.</p>
+                
+                <p data-lang-key="project_corp_about_p2">Проєкт виконувався для компанії, яка потребувала професійного представлення в інтернеті з можливістю самостійно оновлювати контент без знань програмування.</p>
+
+                <h2 data-lang-key="project_features_h2">Основні можливості</h2>
+                <ul class="features-list">
+                    <li data-lang-key="project_corp_li1"><strong>Адаптивний дизайн</strong> - ідеально виглядає на всіх пристроях від смартфонів до великих моніторів</li>
+                    <li data-lang-key="project_corp_li2"><strong>Форми зворотного зв'язку</strong> - з валідацією та захистом від спаму</li>
+                </ul>
+
+                <h2 data-lang-key="h2_corporacte">Технічні особливості</h2>
+                <p data-lang-key="project_corp_tech_p1">Сайт побудований на GitHub.</p>
+
+                <p data-lang-key="project_corp_tech_p2">Особлива увага приділена безпеці: всі форми захищені від CSRF атак, паролі хешуються, є захист від SQL ін'єкцій та XSS.</p>
+
+                <div class="tech-stack">
+                    <h2 data-lang-key="project_tech_stack_h2">Технології</h2>
+                    <div class="tech-grid">
+                        <div class="tech-item" data-lang-key="project_corp_tech_item1">Visual studio code</div>
+                        <div class="tech-item" data-lang-key="project_corp_tech_item2">Node.js or Java</div>
+                    </div>
+                </div>
+
+                <h2 data-lang-key="project_results_h2">Результати</h2>
+                <p data-lang-key="project_corp_results_p">Після запуску сайту відвідуваність сервера зросла на 70%. Кількість заявок збільшилась на 80%. Клієнт залишився дуже задоволений і замовив додаткові функції для розширення сайту.</p>
+
+                <div class="project-links">
+                    <a href="https://nurytime.fun/" class="project-link" data-lang-key="project_corp_cta_visit">
+                        🌐 Відвідати сайт
+                    </a>
+                    <a href="../svaz.html" class="project-link secondary" data-lang-key="a1_telegram_plugin">
+                        💬 Замовити подібний
+                    </a>
+                    <a href="https://discord.gg/x2U3AxuxvG" class="project-link" data-lang-key="project_cta_discord">
+                    🌐 Відвідати Discord
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p data-lang-key="footer_copy">&copy; 2025 WebDev. Всі права захищені.</p>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script>
+        // Галерея
+        let currentSlide = 0;
+        const images = document.querySelectorAll('.gallery-image');
+        const indicators = document.querySelectorAll('.indicator');
+        const totalSlides = images.length;
+        const currentSlideText = document.querySelector('.current-slide');
+        const totalSlidesText = document.querySelector('.total-slides');
+
+        totalSlidesText.textContent = totalSlides;
+
+        function showSlide(index) {
+            images.forEach((img, i) => {
+                img.classList.toggle('active', i === index);
+            });
+            indicators.forEach((ind, i) => {
+                ind.classList.toggle('active', i === index);
+            });
+            currentSlideText.textContent = index + 1;
+        }
+
+        document.querySelector('.gallery-nav.prev').addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlide);
+        });
+
+        document.querySelector('.gallery-nav.next').addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        });
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+            });
+        });
+
+        // Клавіатура
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                showSlide(currentSlide);
+            } else if (e.key === 'ArrowRight') {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                showSlide(currentSlide);
+            }
+        });
+    </script>
+</body>
+</html>
